@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPE102 Viewbook · Engineering Exploration 1/2026</title>
+  <meta name="description" content="CPE102 Engineering Exploration Group Viewbook — 16 weeks of lab notes, freshmen tips, project logs, and interactive study checklists at KMUTT.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..600&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data/site.js" defer></script>
+  <script src="data/weeks-part1.js" defer></script>
+  <script src="data/weeks-part2.js" defer></script>
+  <script src="data/projects.js" defer></script>
+  <script src="data/team-reflection.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div id="progress-track" aria-hidden="true">
+    <div id="progress-bar"></div>
+  </div>
+
+  <header class="site-header" id="site-header">
+    <div class="header-inner container">
+      <a href="#top" class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </span>
+        <span class="brand-text">
+          <strong>CPE102</strong>
+          <small>LAB VIEWBOOK</small>
+        </span>
+      </a>
+
+      <nav class="main-nav" id="main-nav" aria-label="Primary sections">
+        <a href="#about">About</a>
+        <a href="#journey">Roadmap</a>
+        <a href="#weeks">Weekly Log</a>
+        <a href="#project-1">Projects</a>
+        <a href="#reflection">Reflection</a>
+        <a href="#team">Team</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="#weeks" class="review-counter" id="review-counter" title="Interactive study checklist progress">
+          Reviewed 0/0
+        </a>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch light or dark theme" title="Toggle theme">
+          <span class="theme-icon" aria-hidden="true">☾</span>
+          <span class="theme-label">Dark</span>
+        </button>
+        <button type="button" class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="main-nav">
+          ☰
+        </button>
+      </div>
+    </div>
+
+    <nav class="week-nav-bar" aria-label="Weeks quick jump">
+      <div class="week-nav-strip container" id="week-nav-strip"></div>
+    </nav>
+  </header>
+
+  <main id="app">
+    <section id="top" class="hero-section"></section>
+    <section id="about" class="about-section section-pad"></section>
+    <section id="journey" class="journey-section section-pad"></section>
+    <section id="weeks" class="weeks-section section-pad"></section>
+    <section id="project-1" class="project-section section-pad"></section>
+    <section id="project-2" class="project-section section-pad"></section>
+    <section id="reflection" class="reflection-section section-pad"></section>
+    <section id="team" class="team-section section-pad"></section>
+  </main>
+
+  <footer id="site-footer" class="site-footer"></footer>
+
+  <a href="#top" class="back-to-top" id="back-to-top" aria-label="Back to top" title="Back to top">↑</a>
+
+  <dialog id="lightbox" class="lightbox" aria-label="Photo viewer">
+    <div class="lightbox-frame">
+      <div class="lightbox-topbar">
+        <span class="lightbox-counter" id="lightbox-counter">1 / 1</span>
+        <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close photo viewer">×</button>
+      </div>
+      <div class="lightbox-stage" id="lightbox-stage"></div>
+      <div class="lightbox-bottom">
+        <button type="button" class="lightbox-nav" id="lightbox-prev" aria-label="Previous photo">‹ Prev</button>
+        <div class="lightbox-meta">
+          <div class="lightbox-title" id="lightbox-title"></div>
+          <p class="lightbox-caption" id="lightbox-caption"></p>
+        </div>
+        <button type="button" class="lightbox-nav" id="lightbox-next" aria-label="Next photo">Next ›</button>
+      </div>
+    </div>
+  </dialog>
+</body>
+</html>
