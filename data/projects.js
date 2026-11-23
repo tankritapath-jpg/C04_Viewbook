@@ -128,7 +128,7 @@ window.VIEWBOOK.projects = {
       "Our second-half capstone where we scoped a user problem, designed the system architecture, built an interactive Release 1 prototype, and iterated through user feedback.",
     liveLink: {
       label: "Try Live Prototype ↗",
-      url: "https://vercel.com/"
+      url: "https://expofinal-lyart.vercel.app"
     },
     features: [
       { name: "Core User Flow & UI Prototype", status: "done" },

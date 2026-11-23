@@ -295,6 +295,10 @@ window.VIEWBOOK.weeksPart2 = [
       "Walked TAs through our working Release 1 prototype",
       "Logged every piece of feedback into prioritized fixes for Weeks 14–16"
     ],
+    extraLink: {
+      label: "Open Project Prototype ↗",
+      url: "https://expofinal-lyart.vercel.app"
+    },
     checklist: [
       { id: "r-w13-1", text: "Convert all TA feedback into concrete action items" },
       { id: "r-w13-2", text: "Update Done / In progress / To do feature badges in data/projects.js" }
