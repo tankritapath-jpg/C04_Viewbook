@@ -30,32 +30,32 @@ window.VIEWBOOK.weeksPart2 = [
       {
         src: "assets/img/w08-1.jpg",
         placeholderPath: "assets/img/w08-1.jpg",
-        label: "Week 08 // Live Gesture Command",
-        caption: "Holding up a two-finger gesture beside the arena to test real-time vision-to-robot command recognition."
+        label: "Week 08 // Gesture Control",
+        caption: "Testing vision-based hand gesture robot commands."
       },
       {
         src: "assets/img/w08-2.jpg",
         placeholderPath: "assets/img/w08-2.jpg",
-        label: "Week 08 // Rover & Team Check-In",
-        caption: "Teammates posing in the lab with the upgraded InEngBot sporting its 3D-printed front gripper."
+        label: "Week 08 // Team & Rover",
+        caption: "Project 1 team check-in with the gripper rover."
       },
       {
         src: "assets/img/w08-3.jpg",
         placeholderPath: "assets/img/w08-3.jpg",
-        label: "Week 08 // Color-Sorting Arena",
-        caption: "Overhead view of the Project 1 arena: six colored drop zones surrounding the central pile of faceted blocks."
+        label: "Week 08 // Sorting Arena",
+        caption: "Color-sorting arena with six target zones and blocks."
       },
       {
         src: "assets/img/w08-4.jpg",
         placeholderPath: "assets/img/w08-4.jpg",
-        label: "Week 08 // Gripper & ArUco Rover",
-        caption: "Close-up of the Project 1 rover fitted with a foam-padded 3D-printed servo gripper and top ArUco tracking marker."
+        label: "Week 08 // Gripper & ArUco",
+        caption: "Rover fitted with a 3D-printed gripper and ArUco tag."
       },
       {
         src: "assets/img/w08-5.jpg",
         placeholderPath: "assets/img/w08-5.jpg",
-        label: "Week 08 // Post-Run Team Selfie",
-        caption: "Celebrating in the robotics lab with a custom-wired rover prototype after completing Project 1 testing."
+        label: "Week 08 // Lab Wrap-Up",
+        caption: "Team photo after Project 1 testing runs."
       }
     ],
     concepts: [
@@ -97,32 +97,32 @@ window.VIEWBOOK.weeksPart2 = [
       {
         src: "assets/img/w09-1.jpg",
         placeholderPath: "assets/img/w09-1.jpg",
-        label: "Week 09 // Dual Lab Arenas",
-        caption: "Blue zig-zag corridor track in the foreground and the pink-walled obstacle maze set up across the lab."
+        label: "Week 09 // Lab Arenas",
+        caption: "Corridor track and obstacle maze setup in the lab."
       },
       {
         src: "assets/img/w09-2.jpg",
         placeholderPath: "assets/img/w09-2.jpg",
-        label: "Week 09 // Slalom Racing Track",
-        caption: "Curved red-and-white barrier track laid out on foam mats from START! to the blue checkered FINISH line."
+        label: "Week 09 // Racing Track",
+        caption: "Curved barrier track from START to FINISH."
       },
       {
         src: "assets/img/w09-3.jpg",
         placeholderPath: "assets/img/w09-3.jpg",
-        label: "Week 09 // Basic Robot Programming",
-        caption: "Reviewing Activity #1: Moving the Robot on the lab sheet beside the yellow 2WD rover and laptop."
+        label: "Week 09 // Robot Lab Sheet",
+        caption: "Basic Robot Programming activity and 2WD rover."
       },
       {
         src: "assets/img/w09-4.jpg",
         placeholderPath: "assets/img/w09-4.jpg",
-        label: "Week 09 // Pink-and-Blue Maze",
-        caption: "Inside the walled maze challenge populated with character cutouts and targets for robot navigation."
+        label: "Week 09 // Obstacle Maze",
+        caption: "Walled maze course with target markers."
       },
       {
         src: "assets/img/w09-5.jpg",
         placeholderPath: "assets/img/w09-5.jpg",
-        label: "Week 09 // Maze Challenge Ready",
-        caption: "Teammates posing beside the blue and pink arenas with their wired yellow-chassis 2WD robot."
+        label: "Week 09 // Arena Ready",
+        caption: "2WD robot ready beside the Week 9 arenas."
       }
     ],
     concepts: [
@@ -160,14 +160,14 @@ window.VIEWBOOK.weeksPart2 = [
       {
         src: "assets/img/w10-1.jpg",
         placeholderPath: "assets/img/w10-1.jpg",
-        label: "Week 10 // Unity Player Inspector",
-        caption: "Workshop slide walking through Starter Assets' Playground scene and the FirstPersonController inspector."
+        label: "Week 10 // Unity Inspector",
+        caption: "FirstPersonController setup slide in Unity."
       },
       {
         src: "assets/img/w10-2.jpg",
         placeholderPath: "assets/img/w10-2.jpg",
-        label: "Week 10 // Unity Lab Session",
-        caption: "Students building scenes in the Unity Editor on their laptops during the Week 10 game-engine workshop."
+        label: "Week 10 // Unity Workshop",
+        caption: "Game development workshop session in class."
       }
     ],
     concepts: [

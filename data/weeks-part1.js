@@ -24,20 +24,20 @@ window.VIEWBOOK.weeksPart1 = [
       {
         src: "assets/img/w01-1.jpg",
         placeholderPath: "assets/img/w01-1.jpg",
-        label: "Week 01 // First-Day Orientation",
-        caption: "Freshmen seated across CPE 1114 with laptops and notebooks as the instructor kicks off CPE102 orientation."
+        label: "Week 01 // Orientation",
+        caption: "First-day course orientation in CPE 1114."
       },
       {
         src: "assets/img/w01-2.jpg",
         placeholderPath: "assets/img/w01-2.jpg",
-        label: "Week 01 // House Sorting Ceremony",
-        caption: "Instructor and TA lowering the white engineering hard hat onto a freshman during the house sorting ceremony."
+        label: "Week 01 // House Sorting",
+        caption: "Freshman house sorting ceremony with the hard hat."
       },
       {
         src: "assets/img/w01-3.jpg",
         placeholderPath: "assets/img/w01-3.jpg",
-        label: "Week 01 // Welcome to the House",
-        caption: "Another freshman takes a seat at the front of the room for the traditional hard-hat house sorting moment."
+        label: "Week 01 // Welcome Ceremony",
+        caption: "Hard-hat house sorting moment at the front of class."
       }
     ],
     concepts: [
@@ -84,32 +84,32 @@ window.VIEWBOOK.weeksPart1 = [
       {
         src: "assets/img/w02-1.jpg",
         placeholderPath: "assets/img/w02-1.jpg",
-        label: "Week 02 // Timed Problem Sprint",
-        caption: "Teams huddle around laptops under a live countdown timer to solve the first-day lost-classroom scenario."
+        label: "Week 02 // Problem Sprint",
+        caption: "Timed group sprint on the first-day scenario."
       },
       {
         src: "assets/img/w02-2.jpg",
         placeholderPath: "assets/img/w02-2.jpg",
-        label: "Week 02 // Engineering Soft Skills",
-        caption: "Lecturer introducing the seven core engineering soft skills—from creativity and ethics to teamwork and communication."
+        label: "Week 02 // Soft Skills",
+        caption: "Overview of core engineering soft skills."
       },
       {
         src: "assets/img/w02-3.jpg",
         placeholderPath: "assets/img/w02-3.jpg",
-        label: "Week 02 // Problem–Solution Pitch",
-        caption: "A student team presenting their one-page Problem, Solution, and Why slide at the front of the classroom."
+        label: "Week 02 // Solution Pitch",
+        caption: "Team pitch covering Problem, Solution, and Why."
       },
       {
         src: "assets/img/w02-4.jpg",
         placeholderPath: "assets/img/w02-4.jpg",
-        label: "Week 02 // Project Charter Presentation",
-        caption: "Team presenters walking through their Goal, Tasks, Owners, Risks, and Timeline board during the sprint review."
+        label: "Week 02 // Project Charter",
+        caption: "Presenting goals, tasks, risks, and sprint timeline."
       },
       {
         src: "assets/img/w02-5.jpg",
         placeholderPath: "assets/img/w02-5.jpg",
-        label: "Week 02 // Platform Idea Demo",
-        caption: "Student presenter using a pointer stick to explain a unified classroom information and chat platform."
+        label: "Week 02 // Idea Presentation",
+        caption: "Presenting a unified campus information platform idea."
       }
     ],
     concepts: [
@@ -164,26 +164,26 @@ window.VIEWBOOK.weeksPart1 = [
       {
         src: "assets/img/w03-1.jpg",
         placeholderPath: "assets/img/w03-1.jpg",
-        label: "Week 03 // INNO-X 3D Printing Lab",
-        caption: "Staff introducing fabrication workflows around the workbench with a row of 3D printers lining the INNO-X wall."
+        label: "Week 03 // 3D Printing Lab",
+        caption: "Tour of the INNO-X 3D printing workspace."
       },
       {
         src: "assets/img/w03-2.jpg",
         placeholderPath: "assets/img/w03-2.jpg",
-        label: "Week 03 // Onshape CAD Lecture",
-        caption: "Instructor breaking down the core Onshape workflow: Sketch, Forming and Cutting, and View Orientation."
+        label: "Week 03 // Onshape CAD",
+        caption: "Introduction to sketching and modeling in Onshape."
       },
       {
         src: "assets/img/w03-3.jpg",
         placeholderPath: "assets/img/w03-3.jpg",
-        label: "Week 03 // Orthographic Drawing Help",
-        caption: "A TA guiding students through top, front, and right-side orthographic projection worksheets alongside Onshape."
+        label: "Week 03 // Orthographic Views",
+        caption: "Working through 3-view orthographic projection sheets."
       },
       {
         src: "assets/img/w03-4.jpg",
         placeholderPath: "assets/img/w03-4.jpg",
-        label: "Week 03 // INNO-X Orientation",
-        caption: "Makerspace staff briefing freshmen on INNO-X (Innovation Exchange) access, safety, and prototyping equipment."
+        label: "Week 03 // INNO-X Briefing",
+        caption: "INNO-X Innovation Exchange orientation session."
       }
     ],
     concepts: [
@@ -236,26 +236,26 @@ window.VIEWBOOK.weeksPart1 = [
       {
         src: "assets/img/w04-1.jpg",
         placeholderPath: "assets/img/w04-1.jpg",
-        label: "Week 04 // Robotics Lab Session",
-        caption: "Freshmen assembling InEngBot kits and writing code across the lab desks while TAs circulate to troubleshoot."
+        label: "Week 04 // Robotics Lab",
+        caption: "InEngBot assembly and wiring lab session."
       },
       {
         src: "assets/img/w04-2.jpg",
         placeholderPath: "assets/img/w04-2.jpg",
-        label: "Week 04 // Motor & Chassis Wiring",
-        caption: "Close-up of wiring the 2WD motor leads from the yellow-wheeled chassis into the controller board."
+        label: "Week 04 // Motor Wiring",
+        caption: "Connecting 2WD chassis motors to the controller board."
       },
       {
         src: "assets/img/w04-3.jpg",
         placeholderPath: "assets/img/w04-3.jpg",
-        label: "Week 04 // InEngMotor Arduino Sketch",
-        caption: "Writing forward, stop, and backward drive sequences with InEngMotor.h in Arduino IDE next to the rover board."
+        label: "Week 04 // Arduino Drive Code",
+        caption: "Basic forward and reverse motor sketch in Arduino IDE."
       },
       {
         src: "assets/img/w04-4.jpg",
         placeholderPath: "assets/img/w04-4.jpg",
-        label: "Week 04 // Assembled 2WD Rover",
-        caption: "Showing off a freshly assembled yellow-base InEngBot outside room 1120 after completing motor wiring."
+        label: "Week 04 // Assembled Rover",
+        caption: "Completed 2WD InEngBot prototype outside room 1120."
       }
     ],
     concepts: [
@@ -306,20 +306,20 @@ window.VIEWBOOK.weeksPart1 = [
       {
         src: "assets/img/w05-1.jpg",
         placeholderPath: "assets/img/w05-1.jpg",
-        label: "Week 05 // Computer Vision Lecture",
-        caption: "TA explaining the difference between Image Processing and Computer Vision at the front of the classroom."
+        label: "Week 05 // Computer Vision",
+        caption: "Lecture on Image Processing and Computer Vision."
       },
       {
         src: "assets/img/w05-2.jpg",
         placeholderPath: "assets/img/w05-2.jpg",
-        label: "Week 05 // Teachable Machine Poses",
-        caption: "Capturing live hand-gesture samples in front of the Teachable Machine challenge prompt."
+        label: "Week 05 // Teachable Machine",
+        caption: "Collecting hand-gesture samples for the CV challenge."
       },
       {
         src: "assets/img/w05-3.jpg",
         placeholderPath: "assets/img/w05-3.jpg",
-        label: "Week 05 // Gesture Model Testing",
-        caption: "Testing a thumbs-down hand gesture in front of the tripod camera while a TA verifies live classification."
+        label: "Week 05 // Gesture Testing",
+        caption: "Live camera test of the gesture classification model."
       }
     ],
     concepts: [
@@ -368,13 +368,13 @@ window.VIEWBOOK.weeksPart1 = [
         src: "assets/img/w06-1.jpg",
         placeholderPath: "assets/img/w06-1.jpg",
         label: "Week 06 // Python Workshop",
-        caption: "Instructor leading the Python fundamentals session from the front desk while students follow along on laptops."
+        caption: "Python fundamentals session in the lab."
       },
       {
         src: "assets/img/w06-2.jpg",
         placeholderPath: "assets/img/w06-2.jpg",
-        label: "Week 06 // Python Environment Setup",
-        caption: "Downloading Python for Windows to configure the local interpreter before starting the coding exercises."
+        label: "Week 06 // Python Setup",
+        caption: "Installing Python for Windows on lab laptops."
       }
     ],
     concepts: [
@@ -420,20 +420,20 @@ window.VIEWBOOK.weeksPart1 = [
       {
         src: "assets/img/w07-1.jpg",
         placeholderPath: "assets/img/w07-1.jpg",
-        label: "Week 07 // Raspberry Pi Pair Debug",
-        caption: "Teammates checking GPIO pinouts and code together beside a breadboard and Raspberry Pi kit."
+        label: "Week 07 // Raspberry Pi Lab",
+        caption: "Raspberry Pi GPIO and breadboard lab setup."
       },
       {
         src: "assets/img/w07-2.jpg",
         placeholderPath: "assets/img/w07-2.jpg",
-        label: "Week 07 // Blinking LED Circuit",
-        caption: "Testing a wired red LED circuit on the breadboard while editing the Python GPIO script on a laptop."
+        label: "Week 07 // LED Circuit",
+        caption: "Testing an LED circuit with Python GPIO."
       },
       {
         src: "assets/img/w07-3.jpg",
         placeholderPath: "assets/img/w07-3.jpg",
-        label: "Week 07 // Group Breadboard Bench",
-        caption: "Multiple pairs wiring Raspberry Pi breadboards around the workbench while a TA explains circuit checks."
+        label: "Week 07 // Circuit Workbench",
+        caption: "Group breadboard wiring and circuit troubleshooting."
       }
     ],
     concepts: [
