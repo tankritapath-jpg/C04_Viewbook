@@ -124,6 +124,8 @@
     let gridClass = "bento-photos";
     if (photos.length === 1) gridClass += " bento-single";
     else if (photos.length === 2) gridClass += " bento-two";
+    else if (photos.length === 4) gridClass += " bento-four";
+    else if (photos.length >= 5) gridClass += " bento-five";
 
     const cards = photos
       .map((ph, i) =>

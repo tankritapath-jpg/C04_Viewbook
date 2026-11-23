@@ -22,19 +22,19 @@ window.VIEWBOOK.weeksPart1 = [
       "We kicked off the semester by reframing what computer engineers actually do: we do not just write code—we define real problems, weigh trade-offs, test prototypes, and explain our work clearly.",
     photos: [
       {
-        src: "",
+        src: "assets/img/w01-1.jpg",
         placeholderPath: "assets/img/w01-1.jpg",
         label: "W01 · Opening",
         caption: "First morning session in room CPE 1114 with the course overview"
       },
       {
-        src: "",
+        src: "assets/img/w01-2.jpg",
         placeholderPath: "assets/img/w01-2.jpg",
         label: "W01 · Team Setup",
         caption: "Meeting our Section C teammates and picking our group workflow"
       },
       {
-        src: "",
+        src: "assets/img/w01-3.jpg",
         placeholderPath: "assets/img/w01-3.jpg",
         label: "W01 · Workshop",
         caption: "Brainstorming real-world problems and mapping engineering constraints"
@@ -82,22 +82,34 @@ window.VIEWBOOK.weeksPart1 = [
       "Most student projects stall from unclear communication, not technical bugs. This session introduced simple frameworks to divide ownership fairly and understand how different teammates work best.",
     photos: [
       {
-        src: "",
+        src: "assets/img/w02-1.jpg",
         placeholderPath: "assets/img/w02-1.jpg",
         label: "W02 · Group Challenge",
         caption: "Timed team-building activity testing coordination under pressure"
       },
       {
-        src: "",
+        src: "assets/img/w02-2.jpg",
         placeholderPath: "assets/img/w02-2.jpg",
         label: "W02 · DISC Matrix",
         caption: "Comparing communication preferences across our team"
       },
       {
-        src: "",
+        src: "assets/img/w02-3.jpg",
         placeholderPath: "assets/img/w02-3.jpg",
         label: "W02 · Role Map",
         caption: "Drafting our first RACI chart for upcoming robot workstreams"
+      },
+      {
+        src: "assets/img/w02-4.jpg",
+        placeholderPath: "assets/img/w02-4.jpg",
+        label: "W02 · Team Sprint",
+        caption: "Collaborating with Section C peers during the foundation workshop"
+      },
+      {
+        src: "assets/img/w02-5.jpg",
+        placeholderPath: "assets/img/w02-5.jpg",
+        label: "W02 · Debrief",
+        caption: "Wrapping up our teamwork exercise and sharing takeaways"
       }
     ],
     concepts: [
@@ -150,22 +162,28 @@ window.VIEWBOOK.weeksPart1 = [
       "We moved from rough paper sketches to precise CAD parts—learning how orthographic views describe 3D geometry and how to prepare parts for laser cutting and 3D printing.",
     photos: [
       {
-        src: "",
+        src: "assets/img/w03-1.jpg",
         placeholderPath: "assets/img/w03-1.jpg",
         label: "W03 · Orthographic",
         caption: "Reading Top, Front, and Right Side views with proper dimensions"
       },
       {
-        src: "",
+        src: "assets/img/w03-2.jpg",
         placeholderPath: "assets/img/w03-2.jpg",
         label: "W03 · Onshape 3D",
         caption: "Extruding and assembling chassis brackets in Onshape"
       },
       {
-        src: "",
+        src: "assets/img/w03-3.jpg",
         placeholderPath: "assets/img/w03-3.jpg",
         label: "W03 · Fabrication",
         caption: "Checking clearances and screw hole tolerances before cutting"
+      },
+      {
+        src: "assets/img/w03-4.jpg",
+        placeholderPath: "assets/img/w03-4.jpg",
+        label: "W03 · CAD Lab",
+        caption: "Hands-on 3D modeling session in the computer engineering lab"
       }
     ],
     concepts: [
@@ -216,22 +234,28 @@ window.VIEWBOOK.weeksPart1 = [
       "Hands-on electronics week: wiring breadboards safely, measuring voltage with a multimeter, reading analog sensors, and driving motors via PWM from a microcontroller.",
     photos: [
       {
-        src: "",
+        src: "assets/img/w04-1.jpg",
         placeholderPath: "assets/img/w04-1.jpg",
         label: "W04 · Breadboard",
         caption: "Wiring LEDs, current-limiting resistors, and tactile switches"
       },
       {
-        src: "",
+        src: "assets/img/w04-2.jpg",
         placeholderPath: "assets/img/w04-2.jpg",
         label: "W04 · Serial Monitor",
         caption: "Streaming live sensor readings from the ADC to Arduino IDE"
       },
       {
-        src: "",
+        src: "assets/img/w04-3.jpg",
         placeholderPath: "assets/img/w04-3.jpg",
         label: "W04 · Motor Drive",
         caption: "Testing servo angles and DC motor speed control with PWM"
+      },
+      {
+        src: "assets/img/w04-4.jpg",
+        placeholderPath: "assets/img/w04-4.jpg",
+        label: "W04 · Circuit Lab",
+        caption: "Debugging microcontroller wiring and measuring circuit signals"
       }
     ],
     concepts: [
@@ -280,19 +304,19 @@ window.VIEWBOOK.weeksPart1 = [
       "We explored how raw camera frames become numeric arrays, why HSV beats RGB under changing lights, and how to train and evaluate an image classifier properly.",
     photos: [
       {
-        src: "",
+        src: "assets/img/w05-1.jpg",
         placeholderPath: "assets/img/w05-1.jpg",
         label: "W05 · Dataset",
         caption: "Capturing sample object photos across multiple angles and light levels"
       },
       {
-        src: "",
+        src: "assets/img/w05-2.jpg",
         placeholderPath: "assets/img/w05-2.jpg",
         label: "W05 · Training",
         caption: "Training a classifier and inspecting the confusion matrix"
       },
       {
-        src: "",
+        src: "assets/img/w05-3.jpg",
         placeholderPath: "assets/img/w05-3.jpg",
         label: "W05 · Color Vision",
         caption: "Testing live color detection thresholds on gemstone samples"
@@ -341,22 +365,16 @@ window.VIEWBOOK.weeksPart1 = [
       "Opened the black box behind language models—tracing how sentences split into tokens, map into vector space, and why clear prompts and verification still matter.",
     photos: [
       {
-        src: "",
+        src: "assets/img/w06-1.jpg",
         placeholderPath: "assets/img/w06-1.jpg",
         label: "W06 · Tokenization",
         caption: "Comparing Thai and English token counts on identical prompts"
       },
       {
-        src: "",
+        src: "assets/img/w06-2.jpg",
         placeholderPath: "assets/img/w06-2.jpg",
         label: "W06 · Embeddings",
         caption: "Measuring cosine similarity between related sentences in Colab"
-      },
-      {
-        src: "",
-        placeholderPath: "assets/img/w06-3.jpg",
-        label: "W06 · Prompt Lab",
-        caption: "Testing structured JSON outputs and spotting LLM hallucinations"
       }
     ],
     concepts: [
@@ -400,19 +418,19 @@ window.VIEWBOOK.weeksPart1 = [
       "Focused on writing clean, predictable control logic—breaking big behaviors into focused functions and using State Machines instead of tangled nested loops.",
     photos: [
       {
-        src: "",
+        src: "assets/img/w07-1.jpg",
         placeholderPath: "assets/img/w07-1.jpg",
         label: "W07 · Happy Coding",
         caption: "Solving algorithmic puzzles by breaking tasks into small functions"
       },
       {
-        src: "",
+        src: "assets/img/w07-2.jpg",
         placeholderPath: "assets/img/w07-2.jpg",
         label: "W07 · State Diagram",
         caption: "Sketching robot states before writing embedded firmware"
       },
       {
-        src: "",
+        src: "assets/img/w07-3.jpg",
         placeholderPath: "assets/img/w07-3.jpg",
         label: "W07 · Debugging",
         caption: "Stepping through edge cases and verifying timer math"

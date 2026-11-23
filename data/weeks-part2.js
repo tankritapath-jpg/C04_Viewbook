@@ -28,22 +28,34 @@ window.VIEWBOOK.weeksPart2 = [
       "The milestone of the first half: every team brought their custom-built robot into the arena to sort colored gemstones across both Manual and Autonomous rounds.",
     photos: [
       {
-        src: "",
+        src: "assets/img/w08-1.jpg",
         placeholderPath: "assets/img/w08-1.jpg",
         label: "W08 · Pit Inspection",
         caption: "Measuring chassis dimensions, checking batteries, and tuning sensors"
       },
       {
-        src: "",
+        src: "assets/img/w08-2.jpg",
         placeholderPath: "assets/img/w08-2.jpg",
         label: "W08 · Arena Match",
         caption: "Sorting gemstones against the clock during official match rounds"
       },
       {
-        src: "",
+        src: "assets/img/w08-3.jpg",
         placeholderPath: "assets/img/w08-3.jpg",
+        label: "W08 · Competition Run",
+        caption: "Robots navigating the competition arena during timed trials"
+      },
+      {
+        src: "assets/img/w08-4.jpg",
+        placeholderPath: "assets/img/w08-4.jpg",
+        label: "W08 · Pit Prep",
+        caption: "Adjusting mechanisms and troubleshooting between competition heats"
+      },
+      {
+        src: "assets/img/w08-5.jpg",
+        placeholderPath: "assets/img/w08-5.jpg",
         label: "W08 · Team Debrief",
-        caption: "Post-match team photo after finishing our competition runs"
+        caption: "Post-match atmosphere after completing the Week 8 competition"
       }
     ],
     concepts: [
@@ -83,22 +95,34 @@ window.VIEWBOOK.weeksPart2 = [
       "Midterm assessment covering the engineering design loop, RACI/DISC, ISO 128 CAD projection, basic circuits, computer vision arrays, NLP tokens, and programming logic.",
     photos: [
       {
-        src: "",
+        src: "assets/img/w09-1.jpg",
         placeholderPath: "assets/img/w09-1.jpg",
-        label: "W09 · Study Group",
-        caption: "Reviewing CAD projections and Ohm's law problems together"
+        label: "W09 · Challenge Arena",
+        caption: "Setting up for the Week 9 Three Challenges midterm session"
       },
       {
-        src: "",
+        src: "assets/img/w09-2.jpg",
         placeholderPath: "assets/img/w09-2.jpg",
-        label: "W09 · Summary Sheet",
-        caption: "Condensing Weeks 1–7 tables and formulas onto one sheet"
+        label: "W09 · Track Test",
+        caption: "Testing and calibrating robot runs across the challenge course"
       },
       {
-        src: "",
+        src: "assets/img/w09-3.jpg",
         placeholderPath: "assets/img/w09-3.jpg",
-        label: "W09 · Post-Exam",
-        caption: "Wrapping up midterms and planning the second-half sprint"
+        label: "W09 · Maze Run",
+        caption: "Navigating obstacles and tight corners in the acrylic maze"
+      },
+      {
+        src: "assets/img/w09-4.jpg",
+        placeholderPath: "assets/img/w09-4.jpg",
+        label: "W09 · Team Prep",
+        caption: "Coordinating fixes and fine-tuning parameters between attempts"
+      },
+      {
+        src: "assets/img/w09-5.jpg",
+        placeholderPath: "assets/img/w09-5.jpg",
+        label: "W09 · Post-Challenge",
+        caption: "Wrapping up the midterm challenges before the second-half sprint"
       }
     ],
     concepts: [
@@ -134,22 +158,16 @@ window.VIEWBOOK.weeksPart2 = [
       "A fast-paced intro to game architecture: core gameplay loops, collision detection, UI feedback, and scoping a playable mini-game within a tight jam deadline.",
     photos: [
       {
-        src: "",
+        src: "assets/img/w10-1.jpg",
         placeholderPath: "assets/img/w10-1.jpg",
-        label: "W10 · Paper Prototype",
-        caption: "Mapping controls, win conditions, and level flow on paper"
+        label: "W10 · Game Dev Lab",
+        caption: "Designing gameplay mechanics and building the Unity scene in class"
       },
       {
-        src: "",
+        src: "assets/img/w10-2.jpg",
         placeholderPath: "assets/img/w10-2.jpg",
-        label: "W10 · Unity Scene",
-        caption: "Wiring player movement scripts, colliders, and score UI"
-      },
-      {
-        src: "",
-        placeholderPath: "assets/img/w10-3.jpg",
         label: "W10 · Playtest",
-        caption: "Watching classmates playtest to spot confusing controls"
+        caption: "Playtesting our Game Jam prototype and gathering peer feedback"
       }
     ],
     concepts: [
