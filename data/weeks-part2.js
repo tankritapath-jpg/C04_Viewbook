@@ -28,22 +28,10 @@ window.VIEWBOOK.weeksPart2 = [
       "The milestone of the first half: every team brought their custom-built robot into the arena to sort colored gemstones across both Manual and Autonomous rounds.",
     photos: [
       {
-        src: "",
+        src: "assets/img/w08-1.jpg",
         placeholderPath: "assets/img/w08-1.jpg",
-        label: "W08 · Pit Inspection",
-        caption: "Measuring chassis dimensions, checking batteries, and tuning sensors"
-      },
-      {
-        src: "",
-        placeholderPath: "assets/img/w08-2.jpg",
-        label: "W08 · Arena Match",
-        caption: "Sorting gemstones against the clock during official match rounds"
-      },
-      {
-        src: "",
-        placeholderPath: "assets/img/w08-3.jpg",
-        label: "W08 · Team Debrief",
-        caption: "Post-match team photo after finishing our competition runs"
+        label: "W08 · Gripper Robot",
+        caption: "A two-wheeled gripper robot with its ArUco marker surrounded by faceted gemstones on the arena mat"
       }
     ],
     concepts: [
@@ -83,22 +71,16 @@ window.VIEWBOOK.weeksPart2 = [
       "Midterm assessment covering the engineering design loop, RACI/DISC, ISO 128 CAD projection, basic circuits, computer vision arrays, NLP tokens, and programming logic.",
     photos: [
       {
-        src: "",
+        src: "assets/img/w09-1.jpg",
         placeholderPath: "assets/img/w09-1.jpg",
-        label: "W09 · Study Group",
-        caption: "Reviewing CAD projections and Ohm's law problems together"
+        label: "W09 · Race Track",
+        caption: "Winding competition race track outlined with segmented barriers between START and FINISH"
       },
       {
-        src: "",
+        src: "assets/img/w09-2.jpg",
         placeholderPath: "assets/img/w09-2.jpg",
-        label: "W09 · Summary Sheet",
-        caption: "Condensing Weeks 1–7 tables and formulas onto one sheet"
-      },
-      {
-        src: "",
-        placeholderPath: "assets/img/w09-3.jpg",
-        label: "W09 · Post-Exam",
-        caption: "Wrapping up midterms and planning the second-half sprint"
+        label: "W09 · Acrylic Maze",
+        caption: "Tabletop acrylic walled maze on the foam mat with obstacle props inside"
       }
     ],
     concepts: [
@@ -134,22 +116,16 @@ window.VIEWBOOK.weeksPart2 = [
       "A fast-paced intro to game architecture: core gameplay loops, collision detection, UI feedback, and scoping a playable mini-game within a tight jam deadline.",
     photos: [
       {
-        src: "",
+        src: "assets/img/w10-1.jpg",
         placeholderPath: "assets/img/w10-1.jpg",
-        label: "W10 · Paper Prototype",
-        caption: "Mapping controls, win conditions, and level flow on paper"
+        label: "W10 · Unity Lab Slide",
+        caption: "Classroom projection slide showing Unity Scene view and Inspector setup for Player component"
       },
       {
-        src: "",
+        src: "assets/img/w10-2.jpg",
         placeholderPath: "assets/img/w10-2.jpg",
-        label: "W10 · Unity Scene",
-        caption: "Wiring player movement scripts, colliders, and score UI"
-      },
-      {
-        src: "",
-        placeholderPath: "assets/img/w10-3.jpg",
-        label: "W10 · Playtest",
-        caption: "Watching classmates playtest to spot confusing controls"
+        label: "W10 · Game Design Theory",
+        caption: "Game Design Theory book on the lab desk during our Game & Game Jam session"
       }
     ],
     concepts: [
@@ -238,7 +214,14 @@ window.VIEWBOOK.weeksPart2 = [
     lecturer: "CPE102 Systems Team",
     summary:
       "Stepped inside the operating system to see how processes share CPU and memory, and practiced managing headless Linux servers from the terminal.",
-    photos: [],
+    photos: [
+      {
+        src: "assets/img/w12-1.jpg",
+        placeholderPath: "assets/img/w12-1.jpg",
+        label: "W12 · Ubuntu VM Web Lab",
+        caption: "PHP/MySQL web page served from the Ubuntu Server VM during the OS lab"
+      }
+    ],
     concepts: [
       {
         title: "Essential Linux Server Commands",

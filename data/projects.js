@@ -96,22 +96,22 @@ window.VIEWBOOK.projects = {
     ],
     photos: [
       {
-        src: "",
+        src: "assets/img/robot-1.jpg",
         placeholderPath: "assets/img/robot-1.jpg",
-        label: "Robot · 3D CAD",
-        caption: "Full Onshape assembly showing drivetrain and sorting gate"
+        label: "Robot · Overhead Zone Detection",
+        caption: "Overhead camera view detecting all six colored target zones, central gemstone pile, and ArUco marker"
       },
       {
-        src: "",
+        src: "assets/img/robot-2.jpg",
         placeholderPath: "assets/img/robot-2.jpg",
-        label: "Robot · Wiring",
-        caption: "Clean ESP32, motor driver, and battery layout inside chassis"
+        label: "Robot · Control Console",
+        caption: "Robot control console UI displaying live overhead arena video alongside HSV and telemetry panels"
       },
       {
-        src: "",
+        src: "assets/img/robot-3.jpg",
         placeholderPath: "assets/img/robot-3.jpg",
-        label: "Robot · Arena Test",
-        caption: "Live practice run calibrating gemstone color sorting"
+        label: "Robot · ESP32 & Servos",
+        caption: "Close-up of the ESP32 board mounted on an acrylic base with servo motors and 3D-printed gears"
       }
     ],
     reportLink: {
