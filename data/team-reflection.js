@@ -7,8 +7,9 @@
 window.VIEWBOOK = window.VIEWBOOK || {};
 
 window.VIEWBOOK.reflection = {
-  eyebrow: "06 // LOOKING BACK",
+  eyebrow: "RETROSPECTIVE",
   title: "What 16 Weeks in CPE102 Taught Us",
+  lessonsTitle: "Five Lessons From the Workbench",
   quote:
     "Almost every project pushed us to teach ourselves before feeling ready. Waiting for step-by-step instructions slows the whole team down—testing early is how you learn.",
   paragraphs: [
@@ -45,10 +46,10 @@ window.VIEWBOOK.reflection = {
 };
 
 window.VIEWBOOK.team = {
-  eyebrow: "07 // THE TEAM",
-  title: "Group C00 · Section C",
+  eyebrow: "GROUP DIRECTORY",
+  title: "Group C04 · Section C",
   subtitle:
-    "The student team behind this Viewbook and our Semester 1/2026 engineering projects (edit member profiles in data/team-reflection.js).",
+    "The student builders behind C04_Viewbook and our Semester 1/2026 engineering projects (update names & IDs in data/team-reflection.js).",
   members: [
     {
       initials: "M1",

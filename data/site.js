@@ -12,7 +12,7 @@ window.VIEWBOOK.site = {
   semester: "Semester 1/2026",
   section: "Section C (International)",
   room: "CPE 1114",
-  groupName: "Group C00 (Edit Group Name)",
+  groupName: "Group C04",
 
   disciplines: [
     { id: "foundation", label: "Design & Team", color: "var(--cat-foundation)" },
@@ -23,9 +23,9 @@ window.VIEWBOOK.site = {
 
   hero: {
     eyebrow: "KMUTT · COMPUTER ENGINEERING · SEMESTER 1/2026",
-    title: "Engineering Exploration",
+    title: "Group C04 Lab Workbench",
     subtitle:
-      "A shared lab notebook and freshmen field guide by our group—covering 16 weeks of hands-on workshops, robot specs, survival tips, and interactive study checklists.",
+      "Our interactive engineering notebook for CPE102—browse 16 weekly field logs, filter by skill track, test your exam prep, and explore both team projects.",
     stats: [
       { value: "16", label: "Weeks Logged" },
       { value: "4", label: "Skill Tracks" },
@@ -34,35 +34,36 @@ window.VIEWBOOK.site = {
     ],
     specs: [
       { label: "Course", value: "CPE102" },
-      { label: "Group", value: "Group C00" },
+      { label: "Group", value: "Group C04" },
       { label: "Section", value: "Sec C · Fri 08:30" },
       { label: "Room", value: "CPE 1114" }
     ]
   },
 
   about: {
-    eyebrow: "01 // COURSE OVERVIEW",
-    title: "What is CPE102?",
+    eyebrow: "01 // COURSE DOSSIER",
+    title: "Inside Engineering Exploration",
     lead:
       "A first-year studio course that introduces computer engineering through making—from 3D CAD and embedded circuits to computer vision, Linux servers, and team projects.",
     overviewParagraphs: [
       "CPE102 Engineering Exploration gives freshmen a wide look across the computer engineering discipline before deeper theory courses begin. Each week mixes short lectures from faculty and industry guests with hands-on labs.",
-      "This Viewbook combines two tools in one place: a practical Freshmen Guide so incoming students know what to prepare, and a clean Study Log for reviewing key formulas, models, and commands before exams."
+      "We built this workbench to organize everything in one searchable workspace: weekly lab notes, technical diagrams, freshmen prep checklists, and complete build logs for our robot and final capstone."
     ],
     studyLegend: [
       {
-        title: "What we did",
-        desc: "A quick recap of the real lab activities and team builds we completed in class."
+        title: "Activities",
+        desc: "A quick recap of the real lab builds and experiments completed during class."
       },
       {
-        title: "What we understood",
-        desc: "Core concepts, comparison tables, and terminal snippets worth remembering."
+        title: "Key Concepts",
+        desc: "Core engineering models, specification tables, and terminal snippets."
       },
       {
-        title: "Review at home",
-        desc: "Interactive study checkboxes saved in your browser so you can track exam prep."
+        title: "Self-Check",
+        desc: "Interactive review checkboxes saved locally in your browser per week."
       }
     ],
+    workflowTitle: "How Our Lab Weeks Run",
     workflow: [
       {
         step: "STEP 01",

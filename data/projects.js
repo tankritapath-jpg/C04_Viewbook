@@ -29,7 +29,7 @@ window.VIEWBOOK.projects = {
       ["Scoring", "Points per correctly sorted gemstone plus speed/consistency bonus"]
     ],
     robotSpecs: [
-      ["Robot Name", "Group C00 Bot (Edit Robot Name)"],
+      ["Robot Name", "Group C04 Bot (Edit Robot Name)"],
       ["Controller", "ESP32 DevKit + Dual H-Bridge Motor Driver"],
       ["Chassis", "3mm Laser-Cut Acrylic + 3D Printed Sensor Mounts"],
       ["Drivetrain", "2WD Geared DC Motors + Rear Caster"],

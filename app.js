@@ -1,8 +1,7 @@
 /* ==========================================================================
-   app.js — CPE102 Viewbook Editorial Renderer & Interactive Controls
-   "Warm Hardware Studio" edition: sticky-rail week entries, bento contact-sheet
-   photos, week Field Notes / Prep & Review tabs, Project 1 interactive steppers,
-   unified stacked bars, and zero-scroll-hijack navigation.
+   app.js — CPE102 // Group C04 Studio Workbench
+   4-View App-Shell: Overview (SVG Donut), Weekly Archive (Master-Detail +
+   Scroll All + Search), Projects Lab (Stepper + Kanban), and Team Directory.
    ========================================================================== */
 
 (function () {
@@ -19,7 +18,7 @@
   const team = DATA.team || {};
 
   const completedWeeks = [...weeksPart1, ...weeksPart2];
-  const allRoadmapWeeks = [...completedWeeks, ...upcomingWeeks];
+  const allWeeks = [...completedWeeks, ...upcomingWeeks];
   const disciplines = Array.isArray(site.disciplines) ? site.disciplines : [];
 
   const THEME_STORAGE_KEY = "cpe102-theme";
@@ -34,7 +33,53 @@
     "#64748b"
   ];
 
+  // Build deterministic, deduplicated gallery list for the Lightbox
   const galleryItems = [];
+  const galleryIndexByKey = new Map();
+
+  function registerAllGalleryItems() {
+    allWeeks.forEach((wk) => {
+      (wk.photos || []).forEach((ph, i) => {
+        const key = `${wk.id}-${i}`;
+        galleryIndexByKey.set(key, galleryItems.length);
+        galleryItems.push({
+          src: ph.src || "",
+          placeholderPath: ph.placeholderPath || "",
+          label: ph.label || `${wk.code} Photo ${i + 1}`,
+          caption: ph.caption || "",
+          contextTitle: `${wk.code} · ${wk.title}`
+        });
+      });
+    });
+
+    if (projects.project1) {
+      (projects.project1.photos || []).forEach((ph, i) => {
+        const key = `p1-${i}`;
+        galleryIndexByKey.set(key, galleryItems.length);
+        galleryItems.push({
+          src: ph.src || "",
+          placeholderPath: ph.placeholderPath || "",
+          label: ph.label || `Project 1 Photo ${i + 1}`,
+          caption: ph.caption || "",
+          contextTitle: projects.project1.title
+        });
+      });
+    }
+
+    if (projects.project2) {
+      (projects.project2.photos || []).forEach((ph, i) => {
+        const key = `p2-${i}`;
+        galleryIndexByKey.set(key, galleryItems.length);
+        galleryItems.push({
+          src: ph.src || "",
+          placeholderPath: ph.placeholderPath || "",
+          label: ph.label || `Project 2 Photo ${i + 1}`,
+          caption: ph.caption || "",
+          contextTitle: projects.project2.title
+        });
+      });
+    }
+  }
 
   function escapeHtml(str) {
     return String(str ?? "")
@@ -45,20 +90,8 @@
       .replace(/'/g, "&#39;");
   }
 
-  function registerPhoto(photo, contextTitle) {
-    const idx = galleryItems.length;
-    galleryItems.push({
-      src: photo.src || "",
-      placeholderPath: photo.placeholderPath || "",
-      label: photo.label || contextTitle || "Photo",
-      caption: photo.caption || "",
-      contextTitle: contextTitle || ""
-    });
-    return idx;
-  }
-
-  function renderPhotoCard(photo, accentColor, contextTitle, frameCode) {
-    const idx = registerPhoto(photo, contextTitle);
+  function renderPhotoCard(photo, accentColor, key, frameCode) {
+    const idx = galleryIndexByKey.has(key) ? galleryIndexByKey.get(key) : 0;
     const hasSrc = Boolean(photo.src && photo.src.trim());
     const mediaHtml = hasSrc
       ? `<img src="${escapeHtml(photo.src)}" alt="${escapeHtml(photo.caption || photo.label)}" loading="lazy">`
@@ -86,7 +119,7 @@
     `;
   }
 
-  function renderBentoPhotos(photos, accentColor, contextTitle, codePrefix) {
+  function renderBentoPhotos(photos, accentColor, keyPrefix, codePrefix) {
     if (!Array.isArray(photos) || photos.length === 0) return "";
     let gridClass = "bento-photos";
     if (photos.length === 1) gridClass += " bento-single";
@@ -94,180 +127,98 @@
 
     const cards = photos
       .map((ph, i) =>
-        renderPhotoCard(ph, accentColor, contextTitle, `${codePrefix || "IMG"}-0${i + 1}`)
+        renderPhotoCard(ph, accentColor, `${keyPrefix}-${i}`, `${codePrefix}-0${i + 1}`)
       )
       .join("");
     return `<div class="${gridClass}">${cards}</div>`;
   }
 
-  function renderStackedBreakdown(items) {
-    if (!Array.isArray(items) || items.length === 0) return "";
-    const segs = items
-      .map((item, idx) => {
-        const color = SEGMENT_PALETTE[idx % SEGMENT_PALETTE.length];
-        return `<div class="stacked-seg" style="width: ${Number(item.pct) || 0}%; background: ${color};" title="${escapeHtml(item.label)}: ${escapeHtml(item.pct)}%"></div>`;
-      })
-      .join("");
+  /* ========================================================================
+     Sidebar Quick-Track Links
+     ======================================================================== */
+  function renderSidebarTracks() {
+    const el = document.getElementById("sidebar-tracks");
+    if (!el) return;
 
-    const legendRows = items
-      .map((item, idx) => {
-        const color = SEGMENT_PALETTE[idx % SEGMENT_PALETTE.length];
-        return `
-          <div class="stacked-legend-row">
-            <span class="stacked-legend-left">
-              <span class="disc-dot" style="--disc-color: ${color}" aria-hidden="true"></span>
-              <span>${escapeHtml(item.label)}</span>
-            </span>
-            <span class="stacked-legend-pct">${escapeHtml(item.pct)}%</span>
-          </div>
-        `;
-      })
-      .join("");
+    const counts = {};
+    allWeeks.forEach((wk) => {
+      counts[wk.category] = (counts[wk.category] || 0) + 1;
+    });
 
-    return `
-      <div class="stacked-bar-wrap">
-        <div class="stacked-bar" role="img" aria-label="Percentage breakdown bar">${segs}</div>
-        <div class="stacked-legend">${legendRows}</div>
-      </div>
-    `;
-  }
-
-  function renderWeekNavStrip() {
-    const strip = document.getElementById("week-nav-strip");
-    if (!strip) return;
-    strip.innerHTML = allRoadmapWeeks
+    const buttons = disciplines
       .map(
-        (wk) => `
-        <a href="#${escapeHtml(wk.id)}" class="week-pill" data-week-id="${escapeHtml(wk.id)}" style="--wk-color: ${escapeHtml(wk.color)}">
-          <span class="week-pill-dot" aria-hidden="true"></span>
-          <span>${escapeHtml(wk.code)}</span>
-        </a>
-      `
-      )
-      .join("");
-  }
-
-  function renderConsoleReadoutMarkup(wk) {
-    if (!wk) return "";
-    const blurb = wk.summary || wk.subtitle || wk.note || "";
-    return `
-      <div>
-        <div class="console-readout-meta">
-          <span class="console-badge" style="--wk-color: ${escapeHtml(wk.color)}">${escapeHtml(wk.code)}</span>
-          <span>${escapeHtml(wk.date)}</span>
-          <span>·</span>
-          <span>${escapeHtml(wk.categoryLabel || "Track")}</span>
-        </div>
-        <h3>${escapeHtml(wk.title)}</h3>
-        <p>${escapeHtml(blurb)}</p>
-      </div>
-      <div>
-        <a href="#${escapeHtml(wk.id)}" class="console-jump">Jump to ${escapeHtml(wk.code)} log →</a>
-      </div>
-    `;
-  }
-
-  function renderHeroConsole(h) {
-    const matrixHtml = allRoadmapWeeks
-      .map(
-        (wk, i) => `
-        <button type="button"
-                class="console-cell ${i === 0 ? "selected" : ""}"
-                data-console-index="${i}"
-                style="--wk-color: ${escapeHtml(wk.color)}"
-                aria-label="Preview ${escapeHtml(wk.code)}: ${escapeHtml(wk.title)}">
-          <span class="console-cell-code">${escapeHtml(wk.code)}</span>
-          <span class="console-cell-date">${escapeHtml(wk.date)}</span>
+        (d) => `
+        <button type="button" class="sidebar-track-btn" data-jump-track="${escapeHtml(d.id)}">
+          <span class="sidebar-track-left">
+            <span class="disc-dot" style="--disc-color: ${escapeHtml(d.color)}" aria-hidden="true"></span>
+            <span>${escapeHtml(d.label)}</span>
+          </span>
+          <span class="sidebar-track-count">${counts[d.id] || 0}w</span>
         </button>
       `
       )
       .join("");
 
-    const specsHtml = (h.specs || [])
-      .map(
-        (s) => `
-        <div class="spec-cell">
-          <span>${escapeHtml(s.label)}</span>
-          <strong>${escapeHtml(s.value)}</strong>
-        </div>
-      `
-      )
+    el.innerHTML = `<p class="sidebar-tracks-label">Skill Tracks</p>${buttons}`;
+  }
+
+  /* ========================================================================
+     View 1: Overview (Masthead, Track Cards, Course Dossier, SVG Grading Donut)
+     ======================================================================== */
+  function renderGradingDonutSVG(items) {
+    const r = 46;
+    const circumference = 2 * Math.PI * r;
+    let offset = 0;
+
+    const circles = items
+      .map((item, idx) => {
+        const pct = Number(item.pct) || 0;
+        const dash = (pct / 100) * circumference;
+        const gap = Math.min(1.5, dash * 0.15);
+        const color = SEGMENT_PALETTE[idx % SEGMENT_PALETTE.length];
+        const svgCircle = `<circle cx="60" cy="60" r="${r}" fill="none" stroke="${color}" stroke-width="18" stroke-dasharray="${Math.max(0.5, dash - gap).toFixed(2)} ${circumference.toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" />`;
+        offset += dash;
+        return svgCircle;
+      })
       .join("");
 
     return `
-      <aside class="hero-console" aria-label="Interactive semester matrix console">
-        <div class="console-topbar">
-          <span>SEMESTER MATRIX // W01–W16</span>
-          <span class="console-status"><span class="console-pulse" aria-hidden="true"></span>HOVER OR TAP A WEEK</span>
-        </div>
-        <div class="console-matrix" id="console-matrix">${matrixHtml}</div>
-        <div class="console-readout" id="console-readout">${renderConsoleReadoutMarkup(allRoadmapWeeks[0])}</div>
-        <div class="console-specs">${specsHtml}</div>
-      </aside>
+      <svg viewBox="0 0 120 120" role="img" aria-label="Course grading weight distribution donut chart">
+        <circle cx="60" cy="60" r="${r}" fill="none" stroke="var(--bg-subtle)" stroke-width="18" />
+        ${circles}
+      </svg>
     `;
   }
 
-  function renderHero() {
-    const el = document.getElementById("top");
-    if (!el || !site.hero) return;
+  function renderOverview() {
+    const el = document.getElementById("view-overview");
+    if (!el || !site.hero || !site.about) return;
+
     const h = site.hero;
-
-    const legendHtml = disciplines
-      .map(
-        (d) => `
-        <span class="disc-marker">
-          <span class="disc-dot" style="--disc-color: ${escapeHtml(d.color)}" aria-hidden="true"></span>
-          <span>${escapeHtml(d.label)}</span>
-        </span>
-      `
-      )
-      .join("");
-
-    const metricsHtml = (h.stats || [])
-      .map(
-        (s) => `
-        <div class="metric-item">
-          <span class="metric-val">${escapeHtml(s.value)}</span>
-          <span class="metric-lbl">${escapeHtml(s.label)}</span>
-        </div>
-      `
-      )
-      .join("");
-
-    el.innerHTML = `
-      <div class="container">
-        <div class="hero-masthead-bar">
-          <span><strong>${escapeHtml(h.eyebrow)}</strong></span>
-          <span>${escapeHtml(site.section || "Section C")} · ROOM ${escapeHtml(site.room || "CPE 1114")} · ${escapeHtml(site.groupName || "Group")}</span>
-        </div>
-        <div class="hero-grid">
-          <div class="hero-copy">
-            <h1 class="hero-title">${escapeHtml(h.title)}</h1>
-            <p class="hero-subtitle">${escapeHtml(h.subtitle)}</p>
-            <div class="discipline-legend" aria-label="Four engineering tracks">${legendHtml}</div>
-            <div class="metric-strip">${metricsHtml}</div>
-            <div class="hero-ctas">
-              <a href="#journey" class="btn btn-primary">Explore 16 weeks ↓</a>
-              <a href="#project-1" class="btn">View projects</a>
-              <a href="#team" class="btn">Meet the team</a>
-            </div>
-          </div>
-          ${renderHeroConsole(h)}
-        </div>
-      </div>
-    `;
-  }
-
-  function renderAbout() {
-    const el = document.getElementById("about");
-    if (!el || !site.about) return;
     const a = site.about;
 
-    const paragraphsHtml = (a.overviewParagraphs || [])
+    const counts = {};
+    allWeeks.forEach((wk) => {
+      counts[wk.category] = (counts[wk.category] || 0) + 1;
+    });
+
+    const trackCards = disciplines
+      .map(
+        (d) => `
+        <button type="button" class="track-launch-card" data-jump-track="${escapeHtml(d.id)}" style="--disc-color: ${escapeHtml(d.color)}">
+          <span class="track-launch-count">${counts[d.id] || 0}</span>
+          <span class="track-launch-label">${escapeHtml(d.label)}</span>
+          <span class="track-launch-hint">Filter archive →</span>
+        </button>
+      `
+      )
+      .join("");
+
+    const paragraphs = (a.overviewParagraphs || [])
       .map((p) => `<p>${escapeHtml(p)}</p>`)
       .join("");
 
-    const workflowHtml = (a.workflow || [])
+    const workflow = (a.workflow || [])
       .map(
         (w) => `
         <div class="workflow-node">
@@ -279,7 +230,7 @@
       )
       .join("");
 
-    const keyHtml = (a.studyLegend || [])
+    const keyRows = (a.studyLegend || [])
       .map(
         (item) => `
         <div class="notebook-key-row">
@@ -290,7 +241,22 @@
       )
       .join("");
 
-    const rulesHtml = (a.rules || [])
+    const gradingLegend = (a.grading || [])
+      .map((g, idx) => {
+        const color = SEGMENT_PALETTE[idx % SEGMENT_PALETTE.length];
+        return `
+          <div class="stacked-legend-row">
+            <span class="stacked-legend-left">
+              <span class="disc-dot" style="--disc-color: ${color}" aria-hidden="true"></span>
+              <span>${escapeHtml(g.label)}</span>
+            </span>
+            <span class="stacked-legend-pct">${escapeHtml(g.pct)}%</span>
+          </div>
+        `;
+      })
+      .join("");
+
+    const rules = (a.rules || [])
       .map(
         (r, i) => `
         <div class="hairline-rule-item">
@@ -302,78 +268,96 @@
       .join("");
 
     el.innerHTML = `
-      <div class="container">
-        <div class="section-eyebrow">${escapeHtml(a.eyebrow)}</div>
-        <h2 class="section-title">${escapeHtml(a.title)}</h2>
-        <p class="section-lead">${escapeHtml(a.lead)}</p>
+      <div class="overview-masthead">
+        <span><strong>${escapeHtml(h.eyebrow)}</strong></span>
+        <span>${escapeHtml(site.section || "Section C")} · ROOM ${escapeHtml(site.room || "CPE 1114")} · ${escapeHtml(site.groupName || "Group C04")}</span>
+      </div>
 
-        <div class="about-spread">
-          <div>
-            <div class="editorial-prose">${paragraphsHtml}</div>
-            <div class="workflow-rail">${workflowHtml}</div>
-            <p class="sub-heading">How to Use This Notebook</p>
-            <div class="notebook-key">${keyHtml}</div>
+      <div class="overview-hero">
+        <div>
+          <div class="section-eyebrow">${escapeHtml(a.eyebrow)}</div>
+          <h1 class="view-title">${escapeHtml(h.title)}</h1>
+          <p class="section-lead" style="margin-bottom: 1.25rem;">${escapeHtml(h.subtitle)}</p>
+          <div class="hero-ctas">
+            <button type="button" class="btn btn-primary" data-nav-view="archive">Browse 16-Week Archive →</button>
+            <button type="button" class="btn" data-nav-view="projects">Open Projects Lab</button>
+            <button type="button" class="btn" data-nav-view="team">Team &amp; Reflection</button>
+          </div>
+        </div>
+
+        <div>
+          <p class="sub-heading">Jump by Engineering Track</p>
+          <div class="track-cards-grid">${trackCards}</div>
+        </div>
+      </div>
+
+      <div class="overview-split">
+        <div>
+          <h2 class="section-title">${escapeHtml(a.title)}</h2>
+          <p class="section-lead">${escapeHtml(a.lead)}</p>
+          <div class="editorial-prose">${paragraphs}</div>
+
+          <p class="sub-heading" style="margin-top: 2rem;">${escapeHtml(a.workflowTitle || "How Our Lab Weeks Run")}</p>
+          <div class="workflow-rail">${workflow}</div>
+
+          <p class="sub-heading">Inside Each Week Dossier</p>
+          <div class="notebook-key">${keyRows}</div>
+        </div>
+
+        <div>
+          <div class="donut-block">
+            <p class="sub-heading">Course Grading Split</p>
+            <div class="donut-wrap">
+              <div class="donut-svg-box">
+                ${renderGradingDonutSVG(a.grading || [])}
+                <div class="donut-center">
+                  <strong>100%</strong>
+                  <small>TOTAL</small>
+                </div>
+              </div>
+              <div class="donut-summary-copy">
+                Half the semester grade comes from hands-on team projects (20% Robot + 30% Capstone), with weekly labs and exams covering the rest.
+              </div>
+            </div>
+            <div class="stacked-legend">${gradingLegend}</div>
           </div>
 
-          <div>
-            <p class="sub-heading">Grading Breakdown (100%)</p>
-            ${renderStackedBreakdown(a.grading || [])}
-            <p class="sub-heading">Studio Habits & Safety Rules</p>
-            <div class="hairline-rules">${rulesHtml}</div>
-          </div>
+          <p class="sub-heading">Studio Habits &amp; Lab Safety</p>
+          <div class="hairline-rules">${rules}</div>
         </div>
       </div>
     `;
   }
 
-  function renderJourney() {
-    const el = document.getElementById("journey");
-    if (!el) return;
+  /* ========================================================================
+     View 2: Weekly Archive (Master-Detail Split + Search + Scroll All Mode)
+     ======================================================================== */
+  let archiveMode = "focused";
+  let archiveFilter = "all";
+  let archiveQuery = "";
+  let selectedWeekId = allWeeks[0] ? allWeeks[0].id : "w1";
+  let savedCheckIds = new Set();
 
-    const upcomingIds = new Set(upcomingWeeks.map((w) => w.id));
-    const rowsHtml = allRoadmapWeeks
-      .map((wk) => {
-        const isUp = upcomingIds.has(wk.id);
-        return `
-          <a href="#${escapeHtml(wk.id)}" class="toc-row ${isUp ? "is-upcoming" : ""}" style="--wk-color: ${escapeHtml(wk.color)}">
-            <span class="toc-left">
-              <span class="disc-dot" style="--disc-color: ${escapeHtml(wk.color)}" aria-hidden="true"></span>
-              <span class="toc-code">${escapeHtml(wk.code)}</span>
-              <span class="toc-title">${escapeHtml(wk.title)}</span>
-            </span>
-            <span class="toc-leader" aria-hidden="true"></span>
-            <span class="toc-meta">${escapeHtml(wk.date)}${isUp ? " · Upcoming" : ""}</span>
-          </a>
-        `;
-      })
-      .join("");
-
-    el.innerHTML = `
-      <div class="container">
-        <div class="section-eyebrow">02 // TABLE OF CONTENTS</div>
-        <h2 class="section-title">One Semester, Sixteen Stops</h2>
-        <p class="section-lead">Jump straight to any week's field notes, lab photos, freshmen survival tips, and exam review checklists.</p>
-        <div class="toc-grid">${rowsHtml}</div>
-      </div>
-    `;
+  function loadSavedChecks() {
+    try {
+      const raw = localStorage.getItem(CHECKS_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) savedCheckIds = new Set(parsed);
+      }
+    } catch (_) {
+      savedCheckIds = new Set();
+    }
   }
 
   function renderConceptItem(c) {
     let tableHtml = "";
     if (Array.isArray(c.table) && c.table.length > 0) {
       const rows = c.table
-        .map(
-          (row) => `
-          <tr>
-            <th>${escapeHtml(row[0])}</th>
-            <td>${escapeHtml(row[1])}</td>
-          </tr>
-        `
-        )
+        .map((row) => `<tr><th>${escapeHtml(row[0])}</th><td>${escapeHtml(row[1])}</td></tr>`)
         .join("");
       tableHtml = `<table class="kv-table"><tbody>${rows}</tbody></table>`;
     }
-
     const terminalHtml = c.terminal
       ? `<div class="terminal-block"><pre>${escapeHtml(c.terminal)}</pre></div>`
       : "";
@@ -388,26 +372,52 @@
     `;
   }
 
-  function renderWeekArticle(wk) {
-    const photosHtml = renderBentoPhotos(
-      wk.photos,
-      wk.color,
-      `${wk.code} · ${wk.title}`,
-      wk.code
-    );
+  function renderWeekDossierContent(wk, options) {
+    const showNavBar = Boolean(options && options.showNavBar);
+    const navPrevDisabled = options && options.prevDisabled ? "disabled" : "";
+    const navNextDisabled = options && options.nextDisabled ? "disabled" : "";
+    const posText = options && options.posText ? options.posText : "";
 
-    const whatWeDidHtml = (wk.whatWeDid || [])
-      .map((item) => `<li>${escapeHtml(item)}</li>`)
-      .join("");
+    const navBarHtml = showNavBar
+      ? `
+        <div class="dossier-nav-bar">
+          <button type="button" class="dossier-step-btn" id="dossier-prev-btn" ${navPrevDisabled}>← Previous Week</button>
+          <span class="dossier-pos">${escapeHtml(posText)}</span>
+          <button type="button" class="dossier-step-btn" id="dossier-next-btn" ${navNextDisabled}>Next Week →</button>
+        </div>
+      `
+      : "";
 
+    if (wk.note && !wk.whatWeDid) {
+      return `
+        <div style="--wk-color: ${escapeHtml(wk.color)}">
+          ${navBarHtml}
+          <div class="dossier-head">
+            <span class="dossier-big-code">${escapeHtml(wk.code)}</span>
+            <span class="dossier-meta-line">${escapeHtml(wk.date)} · ${escapeHtml(wk.categoryLabel || "Milestone")} · UPCOMING</span>
+          </div>
+          <h2 class="dossier-title">${escapeHtml(wk.title)}</h2>
+          <p class="week-sub">${escapeHtml(wk.subtitle)}</p>
+          <div class="before-class-strip">
+            <p class="sub-heading" style="margin-bottom: 0.35rem;">Upcoming Milestone</p>
+            <p style="margin: 0; font-size: 0.94rem; color: var(--text-muted);">${escapeHtml(wk.note)}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    const photosHtml = renderBentoPhotos(wk.photos, wk.color, wk.id, wk.code);
+    const whatWeDidHtml = (wk.whatWeDid || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     const extraLinkHtml = wk.extraLink
-      ? `<div class="week-extra-link"><a class="btn" href="${escapeHtml(wk.extraLink.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(wk.extraLink.label)}</a></div>`
+      ? `<div style="margin-top: 1rem;"><a class="btn" href="${escapeHtml(wk.extraLink.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(wk.extraLink.label)}</a></div>`
       : "";
 
     const conceptsHtml = (wk.concepts || []).length
       ? `
-        <p class="sub-heading">What we understood</p>
-        <div class="concept-list">${wk.concepts.map(renderConceptItem).join("")}</div>
+        <div class="dossier-section">
+          <p class="sub-heading">Key Concepts</p>
+          <div class="concept-list">${wk.concepts.map(renderConceptItem).join("")}</div>
+        </div>
       `
       : "";
 
@@ -415,139 +425,238 @@
       Array.isArray(wk.beforeClass) && wk.beforeClass.length
         ? `
         <div class="before-class-strip">
-          <p class="sub-heading" style="margin-bottom: 0.45rem;">Before class, have ready</p>
-          <ul class="editorial-bullets" style="margin-bottom: 0;">${wk.beforeClass.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}</ul>
+          <p class="sub-heading" style="margin-bottom: 0.4rem;">Before Class, Have Ready</p>
+          <ul class="editorial-bullets">${wk.beforeClass.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}</ul>
         </div>
       `
         : "";
 
-    const checklistItems = Array.isArray(wk.checklist) ? wk.checklist : [];
-    const checklistHtml = checklistItems
-      .map(
-        (chk) => `
-        <label class="check-item">
-          <input type="checkbox" class="review-checkbox" data-check-id="${escapeHtml(chk.id)}" data-week-id="${escapeHtml(wk.id)}">
-          <span>${escapeHtml(chk.text)}</span>
-        </label>
-      `
-      )
+    const checklistHtml = (wk.checklist || [])
+      .map((chk) => {
+        const checkedAttr = savedCheckIds.has(chk.id) ? "checked" : "";
+        return `
+          <label class="check-item">
+            <input type="checkbox" class="review-checkbox" data-check-id="${escapeHtml(chk.id)}" data-week-id="${escapeHtml(wk.id)}" ${checkedAttr}>
+            <span>${escapeHtml(chk.text)}</span>
+          </label>
+        `;
+      })
       .join("");
 
     const tipHtml = wk.tip
-      ? `<aside class="freshmen-callout"><strong>Tip for freshmen</strong>${escapeHtml(wk.tip)}</aside>`
+      ? `<aside class="freshmen-callout"><strong>Field Note</strong>${escapeHtml(wk.tip)}</aside>`
       : "";
 
-    const notesPanelId = `notes-${wk.id}`;
-    const reviewPanelId = `review-${wk.id}`;
-
     return `
-      <article id="${escapeHtml(wk.id)}" class="week-entry" data-category="${escapeHtml(wk.category || "all")}" style="--wk-color: ${escapeHtml(wk.color)}">
-        <div class="week-rail">
-          <div class="week-big-num">${escapeHtml(wk.num)}</div>
-          <div class="rail-rule" aria-hidden="true"></div>
-          <div class="rail-meta">
-            <span class="rail-track">${escapeHtml(wk.categoryLabel || wk.code)}</span>
-            <strong>${escapeHtml(wk.date)}</strong>
-            <span>${escapeHtml(wk.lecturer)}</span>
-          </div>
+      <div style="--wk-color: ${escapeHtml(wk.color)}">
+        ${navBarHtml}
+        <div class="dossier-head">
+          <span class="dossier-big-code">${escapeHtml(wk.code)}</span>
+          <span class="dossier-meta-line">${escapeHtml(wk.date)} · ${escapeHtml(wk.categoryLabel || "")} · ${escapeHtml(wk.lecturer)}</span>
+        </div>
+        <h2 class="dossier-title">${escapeHtml(wk.title)}</h2>
+        <p class="week-sub">${escapeHtml(wk.subtitle)}</p>
+        <p class="week-summary">${escapeHtml(wk.summary)}</p>
+
+        ${photosHtml}
+
+        <div class="dossier-section">
+          <p class="sub-heading">Activities</p>
+          <ul class="editorial-bullets">${whatWeDidHtml}</ul>
+          ${extraLinkHtml}
         </div>
 
-        <div class="week-main">
-          <h3>${escapeHtml(wk.title)}</h3>
-          <p class="week-sub">${escapeHtml(wk.subtitle)}</p>
-          <p class="week-summary">${escapeHtml(wk.summary)}</p>
+        ${conceptsHtml}
 
-          ${photosHtml}
-
-          <div class="week-tabs-wrap">
-            <div class="week-tablist" role="tablist" aria-label="${escapeHtml(wk.code)} sections">
-              <button type="button" class="week-tab active" role="tab" aria-selected="true" aria-controls="${escapeHtml(notesPanelId)}" data-tab-target="${escapeHtml(notesPanelId)}">
-                Field Notes
-              </button>
-              <button type="button" class="week-tab" role="tab" aria-selected="false" aria-controls="${escapeHtml(reviewPanelId)}" data-tab-target="${escapeHtml(reviewPanelId)}">
-                Prep &amp; Review <span data-week-check-count="${escapeHtml(wk.id)}">(0/${checklistItems.length})</span>
-              </button>
-            </div>
-
-            <div id="${escapeHtml(notesPanelId)}" class="week-tab-panel" role="tabpanel">
-              <p class="sub-heading">What we did</p>
-              <ul class="editorial-bullets">${whatWeDidHtml}</ul>
-              ${extraLinkHtml}
-              ${conceptsHtml}
-            </div>
-
-            <div id="${escapeHtml(reviewPanelId)}" class="week-tab-panel" role="tabpanel" hidden>
-              ${beforeClassHtml}
-              <p class="sub-heading">Review at home</p>
-              <div class="checklist">${checklistHtml}</div>
-              ${tipHtml}
-            </div>
-          </div>
+        <div class="dossier-section">
+          ${beforeClassHtml}
+          <p class="sub-heading">Self-Check Before Exams</p>
+          <div class="checklist">${checklistHtml}</div>
+          ${tipHtml}
         </div>
-      </article>
+      </div>
     `;
   }
 
-  function renderWeeks() {
-    const el = document.getElementById("weeks");
+  function getFilteredWeeks() {
+    const q = archiveQuery.trim().toLowerCase();
+    return allWeeks.filter((wk) => {
+      if (archiveFilter !== "all" && wk.category !== archiveFilter) return false;
+      if (!q) return true;
+      const haystack = [
+        wk.code,
+        wk.title,
+        wk.subtitle,
+        wk.summary,
+        wk.lecturer,
+        wk.categoryLabel,
+        ...(wk.whatWeDid || []),
+        ...(wk.concepts || []).map((c) => `${c.title} ${c.body}`)
+      ]
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(q);
+    });
+  }
+
+  function updateArchiveViewContent() {
+    const masterEl = document.getElementById("archive-master-list");
+    const detailEl = document.getElementById("archive-detail");
+    const splitWrap = document.getElementById("archive-split");
+    const allWrap = document.getElementById("archive-all-list");
+    if (!masterEl || !detailEl || !splitWrap || !allWrap) return;
+
+    const filtered = getFilteredWeeks();
+
+    if (archiveMode === "focused") {
+      splitWrap.hidden = false;
+      allWrap.hidden = true;
+
+      if (filtered.length === 0) {
+        masterEl.innerHTML = `<div class="archive-empty">No weeks match "${escapeHtml(archiveQuery)}".</div>`;
+        detailEl.innerHTML = `<div class="archive-empty">Try clearing your search or switching skill track filters.</div>`;
+        return;
+      }
+
+      if (!filtered.some((w) => w.id === selectedWeekId)) {
+        selectedWeekId = filtered[0].id;
+      }
+
+      const activeIdx = filtered.findIndex((w) => w.id === selectedWeekId);
+      const activeWeek = filtered[activeIdx] || filtered[0];
+
+      masterEl.innerHTML = filtered
+        .map((wk) => {
+          const checks = wk.checklist || [];
+          const doneCount = checks.filter((c) => savedCheckIds.has(c.id)).length;
+          const countLabel = checks.length > 0 ? `${doneCount}/${checks.length}` : "Soon";
+          return `
+            <button type="button"
+                    class="week-list-item ${wk.id === activeWeek.id ? "active" : ""}"
+                    data-select-week="${escapeHtml(wk.id)}"
+                    style="--wk-color: ${escapeHtml(wk.color)}">
+              <span class="wli-code">${escapeHtml(wk.code)}</span>
+              <span style="min-width: 0;">
+                <span class="wli-title" style="display: block;">${escapeHtml(wk.title)}</span>
+                <span class="wli-sub">${escapeHtml(wk.date)} · ${escapeHtml(wk.categoryLabel || "")}</span>
+              </span>
+              <span class="wli-count" data-week-check-count="${escapeHtml(wk.id)}">${escapeHtml(countLabel)}</span>
+            </button>
+          `;
+        })
+        .join("");
+
+      detailEl.innerHTML = renderWeekDossierContent(activeWeek, {
+        showNavBar: true,
+        prevDisabled: activeIdx <= 0,
+        nextDisabled: activeIdx >= filtered.length - 1,
+        posText: `${activeIdx + 1} / ${filtered.length} MATCHING WEEKS`
+      });
+
+      masterEl.querySelectorAll("[data-select-week]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          selectedWeekId = btn.dataset.selectWeek;
+          updateArchiveViewContent();
+        });
+      });
+
+      const prevBtn = document.getElementById("dossier-prev-btn");
+      const nextBtn = document.getElementById("dossier-next-btn");
+      if (prevBtn) {
+        prevBtn.addEventListener("click", () => {
+          if (activeIdx > 0) {
+            selectedWeekId = filtered[activeIdx - 1].id;
+            updateArchiveViewContent();
+          }
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener("click", () => {
+          if (activeIdx < filtered.length - 1) {
+            selectedWeekId = filtered[activeIdx + 1].id;
+            updateArchiveViewContent();
+          }
+        });
+      }
+    } else {
+      splitWrap.hidden = true;
+      allWrap.hidden = false;
+
+      if (filtered.length === 0) {
+        allWrap.innerHTML = `<div class="archive-empty">No weeks match "${escapeHtml(archiveQuery)}".</div>`;
+        return;
+      }
+
+      allWrap.innerHTML = filtered
+        .map((wk) => {
+          let block = `<article class="archive-all-entry">${renderWeekDossierContent(wk, { showNavBar: false })}</article>`;
+          if (wk.id === "w9" && archiveFilter === "all" && !archiveQuery.trim() && midtermBreak) {
+            block += `
+              <div style="padding: 1rem 0; border-top: 1px dashed var(--border-strong); border-bottom: 1px dashed var(--border-strong); font-size: 0.9rem; color: var(--text-muted);">
+                <strong style="font-family: var(--font-mono); color: var(--text);">${escapeHtml(midtermBreak.date)} · ${escapeHtml(midtermBreak.title)}:</strong> ${escapeHtml(midtermBreak.text)}
+              </div>
+            `;
+          }
+          return block;
+        })
+        .join("");
+    }
+  }
+
+  function renderArchive() {
+    const el = document.getElementById("view-archive");
     if (!el) return;
 
-    const countsByCat = {};
-    allRoadmapWeeks.forEach((wk) => {
-      const cat = wk.category || "other";
-      countsByCat[cat] = (countsByCat[cat] || 0) + 1;
+    const counts = {};
+    allWeeks.forEach((wk) => {
+      counts[wk.category] = (counts[wk.category] || 0) + 1;
     });
 
-    const filterButtons = [
-      `<button type="button" class="filter-pill active" data-filter="all">All (${allRoadmapWeeks.length})</button>`,
+    const filterBtns = [
+      `<button type="button" class="filter-pill ${archiveFilter === "all" ? "active" : ""}" data-filter="all">All (${allWeeks.length})</button>`,
       ...disciplines.map(
         (d) => `
-        <button type="button" class="filter-pill" data-filter="${escapeHtml(d.id)}">
+        <button type="button" class="filter-pill ${archiveFilter === d.id ? "active" : ""}" data-filter="${escapeHtml(d.id)}">
           <span class="disc-dot" style="--disc-color: ${escapeHtml(d.color)}" aria-hidden="true"></span>
-          <span>${escapeHtml(d.label)} (${countsByCat[d.id] || 0})</span>
+          <span>${escapeHtml(d.label)} (${counts[d.id] || 0})</span>
         </button>
       `
       )
     ].join("");
 
-    const stackItems = completedWeeks.map((wk) => {
-      let html = renderWeekArticle(wk);
-      if (wk.id === "w9" && midtermBreak) {
-        html += `
-          <div class="break-banner" id="midterm-break-banner">
-            <div><strong>${escapeHtml(midtermBreak.date)}</strong> · ${escapeHtml(midtermBreak.title)}</div>
-            <div>${escapeHtml(midtermBreak.text)}</div>
-          </div>
-        `;
-      }
-      return html;
-    });
-
-    const upcomingHtml = upcomingWeeks
-      .map(
-        (u) => `
-        <article id="${escapeHtml(u.id)}" class="upcoming-card" data-category="${escapeHtml(u.category || "milestone")}" style="--wk-color: ${escapeHtml(u.color)}">
-          <div class="upcoming-code">${escapeHtml(u.code)} · ${escapeHtml(u.date)}</div>
-          <h4>${escapeHtml(u.title)}</h4>
-          <p>${escapeHtml(u.subtitle)}</p>
-          <p>${escapeHtml(u.note)}</p>
-        </article>
-      `
-      )
-      .join("");
-
     el.innerHTML = `
-      <div class="container">
-        <div class="section-eyebrow">03 // WEEKLY FIELD LOG</div>
-        <h2 class="section-title">Weeks 01 to 16</h2>
-        <p class="section-lead">Filter by skill track, browse contact-sheet photos, or switch each week's tab to check off exam prep items.</p>
-        <div class="filter-bar" id="week-filter-bar" role="group" aria-label="Filter weekly logs by track">${filterButtons}</div>
-        <div class="weeks-editorial-list">${stackItems.join("")}</div>
-        <div class="upcoming-editorial-grid">${upcomingHtml}</div>
+      <div class="archive-header">
+        <div>
+          <div class="section-eyebrow">02 // WEEKLY FIELD ARCHIVE</div>
+          <h1 class="view-title" style="margin-bottom: 0.25rem;">Weeks 01 to 16</h1>
+          <p class="section-lead" style="margin-bottom: 0;">Search topics, switch skill tracks, or toggle between Focused Dossier and Scroll-All mode.</p>
+        </div>
+
+        <div class="mode-switcher" role="group" aria-label="Archive layout mode">
+          <button type="button" class="mode-btn active" data-archive-mode="focused">Focused View</button>
+          <button type="button" class="mode-btn" data-archive-mode="all">Scroll All (16)</button>
+        </div>
       </div>
+
+      <div class="archive-controls">
+        <input type="search" id="archive-search" class="archive-search" placeholder="Search weeks, tools, concepts..." aria-label="Search weekly archive">
+        <div class="filter-bar" id="archive-filter-bar" role="group" aria-label="Filter by skill track">${filterBtns}</div>
+      </div>
+
+      <div class="archive-split" id="archive-split">
+        <aside class="archive-master" id="archive-master-list" aria-label="Week index"></aside>
+        <div class="archive-detail" id="archive-detail"></div>
+      </div>
+
+      <div class="archive-all-list" id="archive-all-list" hidden></div>
     `;
+
+    updateArchiveViewContent();
   }
 
+  /* ========================================================================
+     View 3: Projects Lab (Dark Studio Canvas + Stepper + 3-Column Kanban)
+     ======================================================================== */
   function renderEvolutionPanelMarkup(entry) {
     if (!entry) return "";
     return `
@@ -576,10 +685,11 @@
     return `<div class="pipeline-flow">${nodes}</div>`;
   }
 
-  function renderProject1() {
-    const el = document.getElementById("project-1");
+  function renderProjects() {
+    const el = document.getElementById("view-projects");
     const p1 = projects.project1;
-    if (!el || !p1) return;
+    const p2 = projects.project2;
+    if (!el || !p1 || !p2) return;
 
     const gemsHtml = (p1.gemstones || [])
       .map(
@@ -595,8 +705,6 @@
     const reportBtn = p1.reportLink
       ? `<a class="btn" href="${escapeHtml(p1.reportLink.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(p1.reportLink.label)}</a>`
       : "";
-
-    const photosHtml = renderBentoPhotos(p1.photos, "var(--cat-hardware)", p1.title, "BOT");
 
     const evoButtons = (p1.evolution || [])
       .map(
@@ -626,82 +734,42 @@
       .map((r) => `<tr><th>${escapeHtml(r[0])}</th><td>${escapeHtml(r[1])}</td></tr>`)
       .join("");
 
-    el.innerHTML = `
-      <div class="container project-shell">
-        <div class="project-intro-grid">
-          <div>
-            <div class="section-eyebrow">04 // ${escapeHtml(p1.eyebrow)}</div>
-            <h2 class="section-title">${escapeHtml(p1.title)}</h2>
-            <p class="section-lead" style="margin-bottom: 0.6rem;">${escapeHtml(p1.subtitle)}</p>
-            <p style="margin: 0; color: var(--text-muted); max-width: 62ch;">${escapeHtml(p1.summary)}</p>
-            <div class="gem-swatches" aria-label="Gemstone colors">${gemsHtml}</div>
+    const rubricSegs = (p1.rubric || [])
+      .map((r, idx) => {
+        const color = SEGMENT_PALETTE[idx % SEGMENT_PALETTE.length];
+        return `<div class="stacked-seg" style="width: ${Number(r.pct) || 0}%; background: ${color};" title="${escapeHtml(r.label)}: ${escapeHtml(r.pct)}%"></div>`;
+      })
+      .join("");
+
+    const rubricLegend = (p1.rubric || [])
+      .map((r, idx) => {
+        const color = SEGMENT_PALETTE[idx % SEGMENT_PALETTE.length];
+        return `
+          <div class="stacked-legend-row">
+            <span class="stacked-legend-left">
+              <span class="disc-dot" style="--disc-color: ${color}" aria-hidden="true"></span>
+              <span>${escapeHtml(r.label)}</span>
+            </span>
+            <span class="stacked-legend-pct">${escapeHtml(r.pct)}%</span>
           </div>
-          <div style="display: flex; justify-content: flex-start;">${reportBtn}</div>
-        </div>
+        `;
+      })
+      .join("");
 
-        ${photosHtml}
+    // Project 2 Kanban grouping
+    const doneFeatures = (p2.features || []).filter((f) => f.status === "done");
+    const progFeatures = (p2.features || []).filter((f) => f.status === "progress");
+    const todoFeatures = (p2.features || []).filter((f) => f.status !== "done" && f.status !== "progress");
 
-        <div class="interactive-lab-box">
-          <p class="sub-heading">Design Evolution Stepper (Select a Iteration)</p>
-          <div class="stepper-tabs" id="p1-evo-tabs">${evoButtons}</div>
-          <div id="p1-evo-panel">${renderEvolutionPanelMarkup((p1.evolution || [])[0])}</div>
+    const renderKanbanCol = (title, colClass, items) => `
+      <div class="kanban-col ${colClass}">
+        <div class="kanban-col-head">
+          <span>${escapeHtml(title)}</span>
+          <span>${items.length}</span>
         </div>
-
-        <div class="interactive-lab-box" style="border-top: none; padding-top: 0;">
-          <p class="sub-heading">Control Pipeline Switcher</p>
-          <div class="stepper-tabs" id="p1-pipe-tabs">${pipeButtons}</div>
-          <div id="p1-pipe-panel">${renderPipelinePanelMarkup((p1.pipelines || [])[0])}</div>
-        </div>
-
-        <div class="spec-columns">
-          <div>
-            <p class="sub-heading">Competition Rules</p>
-            <table class="kv-table"><tbody>${compRows}</tbody></table>
-          </div>
-          <div>
-            <p class="sub-heading">Our Robot Specs</p>
-            <table class="kv-table"><tbody>${robotRows}</tbody></table>
-          </div>
-        </div>
-
-        <div>
-          <p class="sub-heading">Competition Scoring Rubric (100%)</p>
-          ${renderStackedBreakdown(p1.rubric || [])}
-        </div>
+        ${items.map((f) => `<div class="kanban-card">${escapeHtml(f.name)}</div>`).join("") || `<div style="font-size: 0.8rem; color: var(--text-soft);">None</div>`}
       </div>
     `;
-  }
-
-  function renderProject2() {
-    const el = document.getElementById("project-2");
-    const p2 = projects.project2;
-    if (!el || !p2) return;
-
-    const statusClassMap = {
-      done: "status-done",
-      progress: "status-progress",
-      todo: "status-todo"
-    };
-    const statusLabelMap = {
-      done: "Done",
-      progress: "In progress",
-      todo: "To do"
-    };
-
-    const liveBtn = p2.liveLink
-      ? `<a class="btn btn-primary" href="${escapeHtml(p2.liveLink.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(p2.liveLink.label)}</a>`
-      : "";
-
-    const featureRows = (p2.features || [])
-      .map(
-        (f) => `
-        <div class="feature-row">
-          <span>${escapeHtml(f.name)}</span>
-          <span class="status-tag ${statusClassMap[f.status] || "status-todo"}">${statusLabelMap[f.status] || "To do"}</span>
-        </div>
-      `
-      )
-      .join("");
 
     const timelineHtml = (p2.timeline || [])
       .map(
@@ -715,44 +783,109 @@
       )
       .join("");
 
-    const photosHtml = renderBentoPhotos(p2.photos, "var(--cat-milestone)", p2.title, "CAP");
+    const liveBtn = p2.liveLink
+      ? `<a class="btn btn-primary" href="${escapeHtml(p2.liveLink.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(p2.liveLink.label)}</a>`
+      : "";
 
     el.innerHTML = `
-      <div class="container project-shell">
-        <div class="project-intro-grid">
-          <div>
-            <div class="section-eyebrow">05 // ${escapeHtml(p2.eyebrow)}</div>
-            <h2 class="section-title">${escapeHtml(p2.title)}</h2>
-            <p class="section-lead" style="margin-bottom: 0.6rem;">${escapeHtml(p2.subtitle)}</p>
-            <p style="margin: 0; color: var(--text-muted); max-width: 62ch;">${escapeHtml(p2.summary)}</p>
-          </div>
-          <div>${liveBtn}</div>
+      <div class="section-eyebrow">03 // PROJECTS LAB</div>
+      <h1 class="view-title" style="margin-bottom: 1.5rem;">Hardware &amp; Capstone Builds</h1>
+
+      <div class="projects-lab-surface">
+        <div class="project-switcher" role="tablist" aria-label="Select project">
+          <button type="button" class="proj-switch-btn active" role="tab" aria-selected="true" data-project-tab="p1">
+            01 · Gemstone Sorting Robot
+          </button>
+          <button type="button" class="proj-switch-btn" role="tab" aria-selected="false" data-project-tab="p2">
+            02 · Final Group Capstone
+          </button>
         </div>
 
-        <div class="spec-columns">
-          <div>
-            <p class="sub-heading">Release 1 Feature Scope</p>
-            <div class="feature-ledger" style="margin-bottom: 2rem;">${featureRows}</div>
-            <p class="sub-heading">Delivery Timeline</p>
-            <div class="timeline">${timelineHtml}</div>
+        <div id="project-panel-p1" class="project-subpanel" role="tabpanel">
+          <div class="project-intro-grid">
+            <div>
+              <div class="section-eyebrow">${escapeHtml(p1.eyebrow)}</div>
+              <h2 class="section-title">${escapeHtml(p1.title)}</h2>
+              <p class="week-sub">${escapeHtml(p1.subtitle)}</p>
+              <p style="margin: 0; color: var(--text-muted); max-width: 62ch;">${escapeHtml(p1.summary)}</p>
+              <div class="gem-swatches" aria-label="Gemstone colors">${gemsHtml}</div>
+            </div>
+            <div>${reportBtn}</div>
           </div>
-          <div>
-            <p class="sub-heading">Slides &amp; UI Previews</p>
-            ${photosHtml}
+
+          ${renderBentoPhotos(p1.photos, "var(--cat-hardware)", "p1", "BOT")}
+
+          <div class="interactive-lab-box">
+            <p class="sub-heading">Design Evolution Stepper</p>
+            <div class="stepper-tabs" id="p1-evo-tabs">${evoButtons}</div>
+            <div id="p1-evo-panel">${renderEvolutionPanelMarkup((p1.evolution || [])[0])}</div>
+          </div>
+
+          <div class="interactive-lab-box">
+            <p class="sub-heading">Control Pipeline Switcher</p>
+            <div class="stepper-tabs" id="p1-pipe-tabs">${pipeButtons}</div>
+            <div id="p1-pipe-panel">${renderPipelinePanelMarkup((p1.pipelines || [])[0])}</div>
+          </div>
+
+          <div class="spec-columns">
+            <div>
+              <p class="sub-heading">Competition Rules</p>
+              <table class="kv-table"><tbody>${compRows}</tbody></table>
+            </div>
+            <div>
+              <p class="sub-heading">Our Robot Specs</p>
+              <table class="kv-table"><tbody>${robotRows}</tbody></table>
+            </div>
+          </div>
+
+          <div style="padding-top: 1.25rem; border-top: 1px solid var(--border);">
+            <p class="sub-heading">Competition Scoring Rubric (100%)</p>
+            <div class="stacked-bar" role="img" aria-label="Project 1 scoring rubric">${rubricSegs}</div>
+            <div class="stacked-legend">${rubricLegend}</div>
+          </div>
+        </div>
+
+        <div id="project-panel-p2" class="project-subpanel" role="tabpanel" hidden>
+          <div class="project-intro-grid">
+            <div>
+              <div class="section-eyebrow">${escapeHtml(p2.eyebrow)}</div>
+              <h2 class="section-title">${escapeHtml(p2.title)}</h2>
+              <p class="week-sub">${escapeHtml(p2.subtitle)}</p>
+              <p style="margin: 0; color: var(--text-muted); max-width: 62ch;">${escapeHtml(p2.summary)}</p>
+            </div>
+            <div>${liveBtn}</div>
+          </div>
+
+          <p class="sub-heading">Release 1 Feature Kanban</p>
+          <div class="kanban-board">
+            ${renderKanbanCol("Done", "col-done", doneFeatures)}
+            ${renderKanbanCol("In Progress", "col-progress", progFeatures)}
+            ${renderKanbanCol("To Do", "col-todo", todoFeatures)}
+          </div>
+
+          <div class="spec-columns">
+            <div>
+              <p class="sub-heading">Delivery Timeline</p>
+              <div class="timeline">${timelineHtml}</div>
+            </div>
+            <div>
+              <p class="sub-heading">Slides &amp; UI Previews</p>
+              ${renderBentoPhotos(p2.photos, "var(--cat-milestone)", "p2", "CAP")}
+            </div>
           </div>
         </div>
       </div>
     `;
   }
 
-  function renderReflection() {
-    const el = document.getElementById("reflection");
-    if (!el || !reflection.title) return;
+  /* ========================================================================
+     View 4: Retrospective, Team Directory & Course Credits
+     ======================================================================== */
+  function renderTeamView() {
+    const el = document.getElementById("view-team");
+    if (!el) return;
 
-    const parasHtml = (reflection.paragraphs || [])
-      .map((p) => `<p>${escapeHtml(p)}</p>`)
-      .join("");
-
+    const parasHtml = (reflection.paragraphs || []).map((p) => `<p>${escapeHtml(p)}</p>`).join("");
     const adviceRows = (reflection.advice || [])
       .map(
         (a) => `
@@ -765,23 +898,7 @@
       )
       .join("");
 
-    el.innerHTML = `
-      <div class="container">
-        <div class="section-eyebrow">${escapeHtml(reflection.eyebrow)}</div>
-        <h2 class="section-title">${escapeHtml(reflection.title)}</h2>
-        <blockquote class="quote-callout">“${escapeHtml(reflection.quote)}”</blockquote>
-        <div class="essay-columns">${parasHtml}</div>
-        <p class="sub-heading">Five Things We'd Tell Our Week 1 Selves</p>
-        <div class="numbered-ledger">${adviceRows}</div>
-      </div>
-    `;
-  }
-
-  function renderTeam() {
-    const el = document.getElementById("team");
-    if (!el || !team.members) return;
-
-    const membersHtml = team.members
+    const membersHtml = (team.members || [])
       .map((m) => {
         const avatarContent = m.photo
           ? `<img src="${escapeHtml(m.photo)}" alt="${escapeHtml(m.name)}" loading="lazy">`
@@ -800,22 +917,7 @@
       })
       .join("");
 
-    el.innerHTML = `
-      <div class="container">
-        <div class="section-eyebrow">${escapeHtml(team.eyebrow)}</div>
-        <h2 class="section-title">${escapeHtml(team.title)}</h2>
-        <p class="section-lead">${escapeHtml(team.subtitle)}</p>
-        <div class="team-directory">${membersHtml}</div>
-        <p class="ta-credits">${escapeHtml(team.taCredits)}</p>
-      </div>
-    `;
-  }
-
-  function renderFooter() {
-    const el = document.getElementById("site-footer");
-    if (!el || !site.footer) return;
-    const f = site.footer;
-
+    const f = site.footer || {};
     const sourcesHtml = (f.sources || []).map((s) => `<li>${escapeHtml(s)}</li>`).join("");
     const toolsHtml = (f.tools || [])
       .map(
@@ -825,143 +927,196 @@
       .join("");
 
     el.innerHTML = `
-      <div class="container">
-        <div class="footer-inner">
-          <div class="footer-col">
-            <h4>Sources & Credits</h4>
-            <ul class="footer-sources">${sourcesHtml}</ul>
-          </div>
-          <div class="footer-col">
-            <h4>Tools Used in CPE102</h4>
-            <div class="tool-chips">${toolsHtml}</div>
-          </div>
+      <div class="section-eyebrow">04 // ${escapeHtml(reflection.eyebrow || "RETROSPECTIVE")}</div>
+      <h1 class="view-title" style="margin-bottom: 1.5rem;">${escapeHtml(reflection.title || "Retrospective & Group C04")}</h1>
+
+      <blockquote class="quote-callout">“${escapeHtml(reflection.quote || "")}”</blockquote>
+      <div class="essay-columns">${parasHtml}</div>
+
+      <p class="sub-heading">${escapeHtml(reflection.lessonsTitle || "Five Lessons From the Workbench")}</p>
+      <div class="numbered-ledger">${adviceRows}</div>
+
+      <div class="section-eyebrow">${escapeHtml(team.eyebrow || "GROUP DIRECTORY")}</div>
+      <h2 class="section-title">${escapeHtml(team.title || "Group C04 · Section C")}</h2>
+      <p class="section-lead">${escapeHtml(team.subtitle || "")}</p>
+
+      <div class="team-directory">${membersHtml}</div>
+      <p class="ta-credits">${escapeHtml(team.taCredits || "")}</p>
+
+      <div class="credits-footer-grid">
+        <div>
+          <p class="sub-heading">Sources &amp; Credits</p>
+          <ul class="footer-sources">${sourcesHtml}</ul>
         </div>
-        <div class="footer-bottom">
-          <span>${escapeHtml(f.copyright)}</span>
-          <a href="#top">Back to top ↑</a>
+        <div>
+          <p class="sub-heading">Tools Used in CPE102</p>
+          <div class="tool-chips">${toolsHtml}</div>
+          <p style="margin: 1rem 0 0; font-size: 0.78rem; color: var(--text-soft);">${escapeHtml(f.copyright || "")}</p>
         </div>
       </div>
     `;
   }
 
   /* ========================================================================
-     Interactive Behaviors
+     Interactive Controllers & State Synchronization
      ======================================================================== */
-  function initThemeToggle() {
-    const btn = document.getElementById("theme-toggle");
-    const root = document.documentElement;
+  function closeMobileSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const backdrop = document.getElementById("sidebar-backdrop");
+    const toggle = document.getElementById("sidebar-toggle");
+    if (sidebar) sidebar.classList.remove("open");
+    if (backdrop) backdrop.classList.remove("open");
+    if (toggle) toggle.setAttribute("aria-expanded", "false");
+  }
 
-    function applyTheme(theme) {
-      root.dataset.theme = theme;
-      if (btn) {
-        const icon = btn.querySelector(".theme-icon");
-        const label = btn.querySelector(".theme-label");
-        if (theme === "dark") {
-          if (icon) icon.textContent = "☀";
-          if (label) label.textContent = "Light";
-        } else {
-          if (icon) icon.textContent = "☾";
-          if (label) label.textContent = "Dark";
-        }
+  function switchView(viewId, updateHash) {
+    const validViews = new Set(["overview", "archive", "projects", "team"]);
+    const target = validViews.has(viewId) ? viewId : "overview";
+
+    document.querySelectorAll(".nav-view-btn[data-view]").forEach((btn) => {
+      const isMatch = btn.dataset.view === target;
+      btn.classList.toggle("active", isMatch);
+      if (isMatch) btn.setAttribute("aria-current", "page");
+      else btn.removeAttribute("aria-current");
+    });
+
+    document.querySelectorAll(".view-panel").forEach((panel) => {
+      const match = panel.id === `view-${target}`;
+      panel.hidden = !match;
+      panel.classList.toggle("active", match);
+    });
+
+    if (updateHash) {
+      try {
+        history.replaceState(null, "", `#${target}`);
+      } catch (_) {}
+    }
+
+    closeMobileSidebar();
+    window.scrollTo(0, 0);
+  }
+
+  function switchProjectTab(tabKey) {
+    const p1Panel = document.getElementById("project-panel-p1");
+    const p2Panel = document.getElementById("project-panel-p2");
+    if (!p1Panel || !p2Panel) return;
+
+    document.querySelectorAll("[data-project-tab]").forEach((btn) => {
+      const active = btn.dataset.projectTab === tabKey;
+      btn.classList.toggle("active", active);
+      btn.setAttribute("aria-selected", String(active));
+    });
+
+    p1Panel.hidden = tabKey !== "p1";
+    p2Panel.hidden = tabKey !== "p2";
+  }
+
+  function applyHashRoute() {
+    const raw = (window.location.hash || "").replace(/^#/, "").toLowerCase();
+    if (!raw || raw === "overview" || raw === "top" || raw === "about") {
+      switchView("overview", false);
+      return;
+    }
+    if (raw === "archive" || raw === "weeks" || raw === "journey") {
+      switchView("archive", false);
+      return;
+    }
+    const matchedWeek = allWeeks.find((w) => w.id === raw);
+    if (matchedWeek) {
+      selectedWeekId = matchedWeek.id;
+      archiveFilter = "all";
+      archiveQuery = "";
+      renderArchive();
+      bindArchiveEvents();
+      switchView("archive", false);
+      return;
+    }
+    if (raw === "projects" || raw === "project-1") {
+      switchView("projects", false);
+      switchProjectTab("p1");
+      return;
+    }
+    if (raw === "project-2") {
+      switchView("projects", false);
+      switchProjectTab("p2");
+      return;
+    }
+    if (raw === "team" || raw === "reflection") {
+      switchView("team", false);
+    }
+  }
+
+  function initViewRouter() {
+    document.querySelectorAll(".nav-view-btn[data-view]").forEach((btn) => {
+      btn.addEventListener("click", () => switchView(btn.dataset.view, true));
+    });
+
+    document.addEventListener("click", (e) => {
+      const navTrigger = e.target.closest("[data-nav-view]");
+      if (navTrigger) {
+        e.preventDefault();
+        switchView(navTrigger.dataset.navView, true);
+        return;
       }
-    }
 
-    let saved = null;
-    try {
-      saved = localStorage.getItem(THEME_STORAGE_KEY);
-    } catch (_) {
-      saved = null;
-    }
-    const prefersDark =
-      window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    applyTheme(saved || (prefersDark ? "dark" : "light"));
+      const trackTrigger = e.target.closest("[data-jump-track]");
+      if (trackTrigger) {
+        const trackId = trackTrigger.dataset.jumpTrack || "all";
+        archiveFilter = trackId;
+        archiveQuery = "";
+        const searchEl = document.getElementById("archive-search");
+        if (searchEl) searchEl.value = "";
+        document.querySelectorAll("#archive-filter-bar .filter-pill").forEach((pill) => {
+          pill.classList.toggle("active", pill.dataset.filter === trackId);
+        });
+        updateArchiveViewContent();
+        switchView("archive", true);
+      }
+    });
 
-    if (btn) {
-      btn.addEventListener("click", () => {
-        const next = root.dataset.theme === "dark" ? "light" : "dark";
-        applyTheme(next);
-        try {
-          localStorage.setItem(THEME_STORAGE_KEY, next);
-        } catch (_) {}
+    window.addEventListener("hashchange", applyHashRoute);
+    applyHashRoute();
+  }
+
+  function bindArchiveEvents() {
+    const searchEl = document.getElementById("archive-search");
+    const filterBar = document.getElementById("archive-filter-bar");
+    const modeButtons = document.querySelectorAll("[data-archive-mode]");
+
+    if (searchEl) {
+      searchEl.value = archiveQuery;
+      searchEl.addEventListener("input", () => {
+        archiveQuery = searchEl.value;
+        updateArchiveViewContent();
       });
     }
-  }
 
-  function initHeroConsole() {
-    const matrix = document.getElementById("console-matrix");
-    const readout = document.getElementById("console-readout");
-    if (!matrix || !readout) return;
-
-    const cells = Array.from(matrix.querySelectorAll(".console-cell"));
-    function selectWeek(idx) {
-      const wk = allRoadmapWeeks[idx];
-      if (!wk) return;
-      cells.forEach((c, i) => c.classList.toggle("selected", i === idx));
-      readout.innerHTML = renderConsoleReadoutMarkup(wk);
-    }
-
-    cells.forEach((cell) => {
-      const idx = Number(cell.dataset.consoleIndex);
-      cell.addEventListener("mouseenter", () => selectWeek(idx));
-      cell.addEventListener("focus", () => selectWeek(idx));
-      cell.addEventListener("click", () => selectWeek(idx));
-    });
-  }
-
-  function initWeekFilters() {
-    const bar = document.getElementById("week-filter-bar");
-    if (!bar) return;
-
-    const buttons = Array.from(bar.querySelectorAll(".filter-pill"));
-    const weekEntries = Array.from(document.querySelectorAll(".week-entry[data-category]"));
-    const upcomingCards = Array.from(document.querySelectorAll(".upcoming-card[data-category]"));
-    const breakBanner = document.getElementById("midterm-break-banner");
-
-    buttons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const filter = btn.dataset.filter || "all";
-        buttons.forEach((b) => b.classList.toggle("active", b === btn));
-
-        weekEntries.forEach((entry) => {
-          const match = filter === "all" || entry.dataset.category === filter;
-          entry.classList.toggle("is-hidden", !match);
-        });
-
-        upcomingCards.forEach((card) => {
-          const match = filter === "all" || card.dataset.category === filter;
-          card.classList.toggle("is-hidden", !match);
-        });
-
-        if (breakBanner) {
-          breakBanner.classList.toggle("is-hidden", filter !== "all");
-        }
-      });
-    });
-  }
-
-  function initWeekTabs() {
-    document.querySelectorAll(".week-tabs-wrap").forEach((wrap) => {
-      const tabs = Array.from(wrap.querySelectorAll(".week-tab"));
-      const panels = Array.from(wrap.querySelectorAll(".week-tab-panel"));
-
-      tabs.forEach((tab) => {
-        tab.addEventListener("click", () => {
-          const targetId = tab.dataset.tabTarget;
-          tabs.forEach((t) => {
-            const active = t === tab;
-            t.classList.toggle("active", active);
-            t.setAttribute("aria-selected", String(active));
+    if (filterBar) {
+      filterBar.querySelectorAll(".filter-pill").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          archiveFilter = btn.dataset.filter || "all";
+          filterBar.querySelectorAll(".filter-pill").forEach((b) => {
+            b.classList.toggle("active", b === btn);
           });
-          panels.forEach((panel) => {
-            const match = panel.id === targetId;
-            panel.hidden = !match;
-          });
+          updateArchiveViewContent();
         });
+      });
+    }
+
+    modeButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        archiveMode = btn.dataset.archiveMode || "focused";
+        modeButtons.forEach((b) => b.classList.toggle("active", b === btn));
+        updateArchiveViewContent();
       });
     });
   }
 
-  function initProject1Tabs() {
+  function initProjectControls() {
+    document.querySelectorAll("[data-project-tab]").forEach((btn) => {
+      btn.addEventListener("click", () => switchProjectTab(btn.dataset.projectTab));
+    });
+
     const p1 = projects.project1;
     if (!p1) return;
 
@@ -992,128 +1147,110 @@
     }
   }
 
-  function initProgressAndActiveWeek() {
-    const bar = document.getElementById("progress-bar");
-    const strip = document.getElementById("week-nav-strip");
-    const backToTop = document.getElementById("back-to-top");
+  function syncReviewCounters() {
+    const counterEl = document.getElementById("review-counter");
+    const fillEl = document.getElementById("review-bar-fill");
 
-    let ticking = false;
-    function updateScrollUI() {
-      const scrollY = window.scrollY || window.pageYOffset || 0;
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      if (bar) {
-        const pct = maxScroll > 0 ? Math.min(100, Math.max(0, (scrollY / maxScroll) * 100)) : 0;
-        bar.style.width = `${pct.toFixed(1)}%`;
+    let totalChecks = 0;
+    let doneChecks = 0;
+    allWeeks.forEach((wk) => {
+      const checks = wk.checklist || [];
+      totalChecks += checks.length;
+      const wkDone = checks.filter((c) => savedCheckIds.has(c.id)).length;
+      doneChecks += wkDone;
+
+      const countSpan = document.querySelector(`[data-week-check-count="${wk.id}"]`);
+      if (countSpan && checks.length > 0) {
+        countSpan.textContent = `${wkDone}/${checks.length}`;
       }
-      if (backToTop) {
-        backToTop.classList.toggle("visible", scrollY > 450);
-      }
-      ticking = false;
+    });
+
+    if (counterEl) {
+      counterEl.textContent = `${doneChecks}/${totalChecks}`;
     }
-
-    window.addEventListener(
-      "scroll",
-      () => {
-        if (!ticking) {
-          window.requestAnimationFrame(updateScrollUI);
-          ticking = true;
-        }
-      },
-      { passive: true }
-    );
-    updateScrollUI();
-
-    const pills = new Map();
-    if (strip) {
-      strip.querySelectorAll(".week-pill[data-week-id]").forEach((p) => {
-        pills.set(p.dataset.weekId, p);
-      });
-    }
-
-    if ("IntersectionObserver" in window && pills.size > 0 && strip) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-            const id = entry.target.id;
-            pills.forEach((pill, key) => {
-              const isMatch = key === id;
-              pill.classList.toggle("active", isMatch);
-              if (isMatch) {
-                const targetLeft = pill.offsetLeft - (strip.clientWidth - pill.offsetWidth) / 2;
-                strip.scrollLeft = Math.max(0, targetLeft);
-              }
-            });
-          });
-        },
-        { rootMargin: "-35% 0px -55% 0px", threshold: 0 }
-      );
-
-      allRoadmapWeeks.forEach((wk) => {
-        const target = document.getElementById(wk.id);
-        if (target) observer.observe(target);
-      });
+    if (fillEl) {
+      const pct = totalChecks > 0 ? Math.round((doneChecks / totalChecks) * 100) : 0;
+      fillEl.style.width = `${pct}%`;
     }
   }
 
   function initReviewChecklist() {
-    const counterEl = document.getElementById("review-counter");
-    const checkboxes = Array.from(document.querySelectorAll(".review-checkbox"));
-    const weekCounters = Array.from(document.querySelectorAll("[data-week-check-count]"));
+    syncReviewCounters();
 
-    let savedIds = new Set();
-    try {
-      const raw = localStorage.getItem(CHECKS_STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) savedIds = new Set(parsed);
-      }
-    } catch (_) {
-      savedIds = new Set();
-    }
-
-    function syncCounter() {
-      const total = checkboxes.length;
-      const checkedCount = checkboxes.filter((cb) => cb.checked).length;
-      if (counterEl) {
-        counterEl.textContent = `Reviewed ${checkedCount}/${total}`;
-        counterEl.classList.toggle("complete", total > 0 && checkedCount === total);
-      }
-
-      const byWeek = {};
-      checkboxes.forEach((cb) => {
-        const wid = cb.dataset.weekId;
-        if (!wid) return;
-        if (!byWeek[wid]) byWeek[wid] = { done: 0, total: 0 };
-        byWeek[wid].total += 1;
-        if (cb.checked) byWeek[wid].done += 1;
-      });
-
-      weekCounters.forEach((span) => {
-        const wid = span.dataset.weekCheckCount;
-        const stat = byWeek[wid] || { done: 0, total: 0 };
-        span.textContent = `(${stat.done}/${stat.total})`;
-      });
-    }
-
-    checkboxes.forEach((cb) => {
+    document.addEventListener("change", (e) => {
+      const cb = e.target;
+      if (!cb || !cb.classList || !cb.classList.contains("review-checkbox")) return;
       const id = cb.dataset.checkId;
-      if (id && savedIds.has(id)) {
-        cb.checked = true;
-      }
-      cb.addEventListener("change", () => {
-        if (id) {
-          if (cb.checked) savedIds.add(id);
-          else savedIds.delete(id);
-          try {
-            localStorage.setItem(CHECKS_STORAGE_KEY, JSON.stringify(Array.from(savedIds)));
-          } catch (_) {}
-        }
-        syncCounter();
+      if (!id) return;
+
+      if (cb.checked) savedCheckIds.add(id);
+      else savedCheckIds.delete(id);
+
+      try {
+        localStorage.setItem(CHECKS_STORAGE_KEY, JSON.stringify(Array.from(savedCheckIds)));
+      } catch (_) {}
+
+      // Sync duplicate checkboxes (if switching between Focused and Scroll-All)
+      document.querySelectorAll(`.review-checkbox[data-check-id="${id}"]`).forEach((other) => {
+        other.checked = cb.checked;
       });
+
+      syncReviewCounters();
+    });
+  }
+
+  function initThemeToggle() {
+    const desktopBtn = document.getElementById("theme-toggle");
+    const mobileBtn = document.getElementById("mobile-theme-toggle");
+    const root = document.documentElement;
+
+    function applyTheme(theme) {
+      root.dataset.theme = theme;
+      const isDark = theme === "dark";
+      [desktopBtn, mobileBtn].forEach((btn) => {
+        if (!btn) return;
+        const icon = btn.querySelector(".theme-icon");
+        const label = btn.querySelector(".theme-label");
+        if (icon) icon.textContent = isDark ? "☀" : "☾";
+        if (label) label.textContent = isDark ? "Light Mode" : "Dark Mode";
+      });
+    }
+
+    let saved = null;
+    try {
+      saved = localStorage.getItem(THEME_STORAGE_KEY);
+    } catch (_) {
+      saved = null;
+    }
+    const prefersDark =
+      window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    applyTheme(saved || (prefersDark ? "dark" : "light"));
+
+    function toggleTheme() {
+      const next = root.dataset.theme === "dark" ? "light" : "dark";
+      applyTheme(next);
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, next);
+      } catch (_) {}
+    }
+
+    if (desktopBtn) desktopBtn.addEventListener("click", toggleTheme);
+    if (mobileBtn) mobileBtn.addEventListener("click", toggleTheme);
+  }
+
+  function initMobileSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const backdrop = document.getElementById("sidebar-backdrop");
+    const toggle = document.getElementById("sidebar-toggle");
+    if (!sidebar || !backdrop || !toggle) return;
+
+    toggle.addEventListener("click", () => {
+      const open = sidebar.classList.toggle("open");
+      backdrop.classList.toggle("open", open);
+      toggle.setAttribute("aria-expanded", String(open));
     });
 
-    syncCounter();
+    backdrop.addEventListener("click", closeMobileSidebar);
   }
 
   function initLightbox() {
@@ -1157,30 +1294,27 @@
 
     function openLightbox(index) {
       showSlide(index);
-      if (typeof dialog.showModal === "function") {
-        dialog.showModal();
-      } else {
-        dialog.setAttribute("open", "");
-      }
+      if (typeof dialog.showModal === "function") dialog.showModal();
+      else dialog.setAttribute("open", "");
     }
 
     function closeLightbox() {
-      if (typeof dialog.close === "function") {
-        dialog.close();
-      } else {
-        dialog.removeAttribute("open");
-      }
+      if (typeof dialog.close === "function") dialog.close();
+      else dialog.removeAttribute("open");
     }
 
-    document.querySelectorAll("[data-lightbox-index]").forEach((card) => {
-      const idx = Number(card.dataset.lightboxIndex);
-      card.addEventListener("click", () => openLightbox(idx));
-      card.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          openLightbox(idx);
-        }
-      });
+    document.addEventListener("click", (e) => {
+      const card = e.target.closest("[data-lightbox-index]");
+      if (card) openLightbox(Number(card.dataset.lightboxIndex));
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const card = e.target.closest ? e.target.closest("[data-lightbox-index]") : null;
+      if (card) {
+        e.preventDefault();
+        openLightbox(Number(card.dataset.lightboxIndex));
+      }
     });
 
     if (prevBtn) prevBtn.addEventListener("click", () => showSlide(currentIndex - 1));
@@ -1197,43 +1331,21 @@
     });
   }
 
-  function initMobileMenu() {
-    const btn = document.getElementById("mobile-menu-btn");
-    const nav = document.getElementById("main-nav");
-    if (!btn || !nav) return;
-
-    btn.addEventListener("click", () => {
-      const isOpen = nav.classList.toggle("open");
-      btn.setAttribute("aria-expanded", String(isOpen));
-    });
-
-    nav.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        nav.classList.remove("open");
-        btn.setAttribute("aria-expanded", "false");
-      });
-    });
-  }
-
   // Boot
-  renderWeekNavStrip();
-  renderHero();
-  renderAbout();
-  renderJourney();
-  renderWeeks();
-  renderProject1();
-  renderProject2();
-  renderReflection();
-  renderTeam();
-  renderFooter();
+  loadSavedChecks();
+  registerAllGalleryItems();
 
-  initThemeToggle();
-  initHeroConsole();
-  initWeekFilters();
-  initWeekTabs();
-  initProject1Tabs();
-  initProgressAndActiveWeek();
+  renderSidebarTracks();
+  renderOverview();
+  renderArchive();
+  renderProjects();
+  renderTeamView();
+
+  bindArchiveEvents();
+  initProjectControls();
   initReviewChecklist();
+  initThemeToggle();
+  initMobileSidebar();
   initLightbox();
-  initMobileMenu();
+  initViewRouter();
 })();

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CPE102 Viewbook · Engineering Exploration 1/2026</title>
-  <meta name="description" content="CPE102 Engineering Exploration Group Viewbook — 16 weeks of lab notes, freshmen tips, project logs, and interactive study checklists at KMUTT.">
+  <title>CPE102 // Group C04 Lab Workbench (1/2026)</title>
+  <meta name="description" content="CPE102 Engineering Exploration Studio Workbench by Group C04 — interactive 16-week archive, skill tracks, robot & capstone labs, and study checklists at KMUTT.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..600&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -17,64 +17,94 @@
   <script src="app.js" defer></script>
 </head>
 <body>
-  <div id="progress-track" aria-hidden="true">
-    <div id="progress-bar"></div>
-  </div>
-
-  <header class="site-header" id="site-header">
-    <div class="header-inner container">
-      <a href="#top" class="brand">
-        <span class="brand-mark" aria-hidden="true">
-          <span></span><span></span><span></span><span></span>
-        </span>
-        <span class="brand-text">
-          <strong>CPE102</strong>
-          <small>LAB VIEWBOOK</small>
-        </span>
-      </a>
-
-      <nav class="main-nav" id="main-nav" aria-label="Primary sections">
-        <a href="#about">About</a>
-        <a href="#journey">Roadmap</a>
-        <a href="#weeks">Weekly Log</a>
-        <a href="#project-1">Projects</a>
-        <a href="#reflection">Reflection</a>
-        <a href="#team">Team</a>
-      </nav>
-
-      <div class="header-actions">
-        <a href="#weeks" class="review-counter" id="review-counter" title="Interactive study checklist progress">
-          Reviewed 0/0
-        </a>
-        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch light or dark theme" title="Toggle theme">
-          <span class="theme-icon" aria-hidden="true">☾</span>
-          <span class="theme-label">Dark</span>
-        </button>
-        <button type="button" class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="main-nav">
-          ☰
-        </button>
-      </div>
-    </div>
-
-    <nav class="week-nav-bar" aria-label="Weeks quick jump">
-      <div class="week-nav-strip container" id="week-nav-strip"></div>
-    </nav>
+  <header class="mobile-topbar">
+    <button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sidebar">
+      ☰
+    </button>
+    <a href="#overview" class="brand mobile-brand" data-nav-view="overview">
+      <span class="brand-mark" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+      </span>
+      <span class="brand-text">
+        <strong>CPE102</strong>
+        <small>C04</small>
+      </span>
+    </a>
+    <button type="button" class="theme-toggle" id="mobile-theme-toggle" aria-label="Switch light or dark theme" title="Toggle theme">
+      <span class="theme-icon" aria-hidden="true">☾</span>
+    </button>
   </header>
 
-  <main id="app">
-    <section id="top" class="hero-section"></section>
-    <section id="about" class="about-section section-pad"></section>
-    <section id="journey" class="journey-section section-pad"></section>
-    <section id="weeks" class="weeks-section section-pad"></section>
-    <section id="project-1" class="project-section section-pad"></section>
-    <section id="project-2" class="project-section section-pad"></section>
-    <section id="reflection" class="reflection-section section-pad"></section>
-    <section id="team" class="team-section section-pad"></section>
-  </main>
+  <div class="app-shell">
+    <div class="sidebar-backdrop" id="sidebar-backdrop" aria-hidden="true"></div>
 
-  <footer id="site-footer" class="site-footer"></footer>
+    <aside class="sidebar" id="sidebar" aria-label="Workbench navigation">
+      <div class="sidebar-top">
+        <a href="#overview" class="brand" data-nav-view="overview">
+          <span class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </span>
+          <span class="brand-text">
+            <strong>CPE102</strong>
+            <small>C04 WORKBENCH</small>
+          </span>
+        </a>
+        <div class="sidebar-meta">KMUTT · SEC C · SEM 1/2026</div>
+      </div>
 
-  <a href="#top" class="back-to-top" id="back-to-top" aria-label="Back to top" title="Back to top">↑</a>
+      <nav class="sidebar-nav" aria-label="Workspace views">
+        <button type="button" class="nav-view-btn active" data-view="overview" aria-current="page">
+          <span class="nav-idx">01</span>
+          <span>Overview</span>
+        </button>
+        <button type="button" class="nav-view-btn" data-view="archive">
+          <span class="nav-idx">02</span>
+          <span>Weekly Archive</span>
+          <span class="nav-badge">16</span>
+        </button>
+        <button type="button" class="nav-view-btn" data-view="projects">
+          <span class="nav-idx">03</span>
+          <span>Projects Lab</span>
+          <span class="nav-badge">2</span>
+        </button>
+        <button type="button" class="nav-view-btn" data-view="team">
+          <span class="nav-idx">04</span>
+          <span>Retrospective &amp; Team</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-tracks" id="sidebar-tracks" aria-label="Quick track filters"></div>
+
+      <div class="sidebar-bottom">
+        <div class="study-progress-widget">
+          <div class="sp-head">
+            <span>EXAM PREP</span>
+            <span id="review-counter">0/0</span>
+          </div>
+          <div class="sp-track">
+            <div class="sp-fill" id="review-bar-fill"></div>
+          </div>
+        </div>
+
+        <div class="sidebar-actions">
+          <button type="button" class="theme-toggle sidebar-theme-btn" id="theme-toggle" aria-label="Switch light or dark theme">
+            <span class="theme-icon" aria-hidden="true">☾</span>
+            <span class="theme-label">Dark Mode</span>
+          </button>
+          <a href="https://github.com/tankritapath-jpg/C04_Viewbook" target="_blank" rel="noopener noreferrer" class="sidebar-repo-link">
+            GitHub ↗
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="workspace" id="workspace">
+      <section id="view-overview" class="view-panel active" role="region" aria-label="Overview"></section>
+      <section id="view-archive" class="view-panel" role="region" aria-label="Weekly Archive" hidden></section>
+      <section id="view-projects" class="view-panel" role="region" aria-label="Projects Lab" hidden></section>
+      <section id="view-team" class="view-panel" role="region" aria-label="Retrospective and Team" hidden></section>
+    </main>
+  </div>
 
   <dialog id="lightbox" class="lightbox" aria-label="Photo viewer">
     <div class="lightbox-frame">
