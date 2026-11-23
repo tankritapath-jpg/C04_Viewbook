@@ -408,8 +408,18 @@
 
     const photosHtml = renderBentoPhotos(wk.photos, wk.color, wk.id, wk.code);
     const whatWeDidHtml = (wk.whatWeDid || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("");
-    const extraLinkHtml = wk.extraLink
-      ? `<div style="margin-top: 1rem;"><a class="btn" href="${escapeHtml(wk.extraLink.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(wk.extraLink.label)}</a></div>`
+    const linksList = Array.isArray(wk.extraLinks)
+      ? wk.extraLinks
+      : wk.extraLink
+        ? [wk.extraLink]
+        : [];
+    const extraLinkHtml = linksList.length
+      ? `<div style="display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem;">${linksList
+          .map(
+            (lnk) =>
+              `<a class="btn" href="${escapeHtml(lnk.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(lnk.label)}</a>`
+          )
+          .join("")}</div>`
       : "";
 
     const conceptsHtml = (wk.concepts || []).length
@@ -783,8 +793,18 @@
       )
       .join("");
 
-    const liveBtn = p2.liveLink
-      ? `<a class="btn btn-primary" href="${escapeHtml(p2.liveLink.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(p2.liveLink.label)}</a>`
+    const p2Links = [
+      p2.liveLink
+        ? `<a class="btn btn-primary" href="${escapeHtml(p2.liveLink.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(p2.liveLink.label)}</a>`
+        : "",
+      p2.slidesLink
+        ? `<a class="btn" href="${escapeHtml(p2.slidesLink.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(p2.slidesLink.label)}</a>`
+        : ""
+    ]
+      .filter(Boolean)
+      .join("");
+    const p2ActionsHtml = p2Links
+      ? `<div style="display: flex; flex-wrap: wrap; gap: 0.6rem;">${p2Links}</div>`
       : "";
 
     el.innerHTML = `
@@ -853,7 +873,7 @@
               <p class="week-sub">${escapeHtml(p2.subtitle)}</p>
               <p style="margin: 0; color: var(--text-muted); max-width: 62ch;">${escapeHtml(p2.summary)}</p>
             </div>
-            <div>${liveBtn}</div>
+            <div>${p2ActionsHtml}</div>
           </div>
 
           <p class="sub-heading">Release 1 Feature Kanban</p>

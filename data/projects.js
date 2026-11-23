@@ -130,6 +130,10 @@ window.VIEWBOOK.projects = {
       label: "Try Live Prototype ↗",
       url: "https://expofinal-lyart.vercel.app"
     },
+    slidesLink: {
+      label: "View Progress Slides (Canva) ↗",
+      url: "https://canva.link/t4x3cul1dj2ix2j"
+    },
     features: [
       { name: "Core User Flow & UI Prototype", status: "done" },
       { name: "Data Model & Local Persistence", status: "done" },
