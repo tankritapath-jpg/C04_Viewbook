@@ -30,32 +30,32 @@ window.VIEWBOOK.weeksPart2 = [
       {
         src: "assets/img/w08-1.jpg",
         placeholderPath: "assets/img/w08-1.jpg",
-        label: "W08 · Pit Inspection",
-        caption: "Measuring chassis dimensions, checking batteries, and tuning sensors"
+        label: "Week 08 // Live Gesture Command",
+        caption: "Holding up a two-finger gesture beside the arena to test real-time vision-to-robot command recognition."
       },
       {
         src: "assets/img/w08-2.jpg",
         placeholderPath: "assets/img/w08-2.jpg",
-        label: "W08 · Arena Match",
-        caption: "Sorting gemstones against the clock during official match rounds"
+        label: "Week 08 // Rover & Team Check-In",
+        caption: "Teammates posing in the lab with the upgraded InEngBot sporting its 3D-printed front gripper."
       },
       {
         src: "assets/img/w08-3.jpg",
         placeholderPath: "assets/img/w08-3.jpg",
-        label: "W08 · Competition Run",
-        caption: "Robots navigating the competition arena during timed trials"
+        label: "Week 08 // Color-Sorting Arena",
+        caption: "Overhead view of the Project 1 arena: six colored drop zones surrounding the central pile of faceted blocks."
       },
       {
         src: "assets/img/w08-4.jpg",
         placeholderPath: "assets/img/w08-4.jpg",
-        label: "W08 · Pit Prep",
-        caption: "Adjusting mechanisms and troubleshooting between competition heats"
+        label: "Week 08 // Gripper & ArUco Rover",
+        caption: "Close-up of the Project 1 rover fitted with a foam-padded 3D-printed servo gripper and top ArUco tracking marker."
       },
       {
         src: "assets/img/w08-5.jpg",
         placeholderPath: "assets/img/w08-5.jpg",
-        label: "W08 · Team Debrief",
-        caption: "Post-match atmosphere after completing the Week 8 competition"
+        label: "Week 08 // Post-Run Team Selfie",
+        caption: "Celebrating in the robotics lab with a custom-wired rover prototype after completing Project 1 testing."
       }
     ],
     concepts: [
@@ -97,32 +97,32 @@ window.VIEWBOOK.weeksPart2 = [
       {
         src: "assets/img/w09-1.jpg",
         placeholderPath: "assets/img/w09-1.jpg",
-        label: "W09 · Challenge Arena",
-        caption: "Setting up for the Week 9 Three Challenges midterm session"
+        label: "Week 09 // Dual Lab Arenas",
+        caption: "Blue zig-zag corridor track in the foreground and the pink-walled obstacle maze set up across the lab."
       },
       {
         src: "assets/img/w09-2.jpg",
         placeholderPath: "assets/img/w09-2.jpg",
-        label: "W09 · Track Test",
-        caption: "Testing and calibrating robot runs across the challenge course"
+        label: "Week 09 // Slalom Racing Track",
+        caption: "Curved red-and-white barrier track laid out on foam mats from START! to the blue checkered FINISH line."
       },
       {
         src: "assets/img/w09-3.jpg",
         placeholderPath: "assets/img/w09-3.jpg",
-        label: "W09 · Maze Run",
-        caption: "Navigating obstacles and tight corners in the acrylic maze"
+        label: "Week 09 // Basic Robot Programming",
+        caption: "Reviewing Activity #1: Moving the Robot on the lab sheet beside the yellow 2WD rover and laptop."
       },
       {
         src: "assets/img/w09-4.jpg",
         placeholderPath: "assets/img/w09-4.jpg",
-        label: "W09 · Team Prep",
-        caption: "Coordinating fixes and fine-tuning parameters between attempts"
+        label: "Week 09 // Pink-and-Blue Maze",
+        caption: "Inside the walled maze challenge populated with character cutouts and targets for robot navigation."
       },
       {
         src: "assets/img/w09-5.jpg",
         placeholderPath: "assets/img/w09-5.jpg",
-        label: "W09 · Post-Challenge",
-        caption: "Wrapping up the midterm challenges before the second-half sprint"
+        label: "Week 09 // Maze Challenge Ready",
+        caption: "Teammates posing beside the blue and pink arenas with their wired yellow-chassis 2WD robot."
       }
     ],
     concepts: [
@@ -160,14 +160,14 @@ window.VIEWBOOK.weeksPart2 = [
       {
         src: "assets/img/w10-1.jpg",
         placeholderPath: "assets/img/w10-1.jpg",
-        label: "W10 · Game Dev Lab",
-        caption: "Designing gameplay mechanics and building the Unity scene in class"
+        label: "Week 10 // Unity Player Inspector",
+        caption: "Workshop slide walking through Starter Assets' Playground scene and the FirstPersonController inspector."
       },
       {
         src: "assets/img/w10-2.jpg",
         placeholderPath: "assets/img/w10-2.jpg",
-        label: "W10 · Playtest",
-        caption: "Playtesting our Game Jam prototype and gathering peer feedback"
+        label: "Week 10 // Unity Lab Session",
+        caption: "Students building scenes in the Unity Editor on their laptops during the Week 10 game-engine workshop."
       }
     ],
     concepts: [
