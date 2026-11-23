@@ -903,11 +903,15 @@
         const avatarContent = m.photo
           ? `<img src="${escapeHtml(m.photo)}" alt="${escapeHtml(m.name)}" loading="lazy">`
           : escapeHtml(m.initials || "TM");
+        const nickHtml =
+          m.nickname && m.nickname.trim()
+            ? ` <small style="color: var(--text-soft); font-weight: 500;">(${escapeHtml(m.nickname)})</small>`
+            : "";
         return `
           <article class="member-row">
             <div class="member-avatar" style="background: ${escapeHtml(m.color || "var(--accent)")}">${avatarContent}</div>
             <div class="member-info">
-              <h3>${escapeHtml(m.name)} <small style="color: var(--text-soft); font-weight: 500;">(${escapeHtml(m.nickname)})</small></h3>
+              <h3>${escapeHtml(m.name)}${nickHtml}</h3>
               <div class="member-id">${escapeHtml(m.studentId)}</div>
               <div class="member-roles-line"><strong>Viewbook</strong>${escapeHtml(m.viewbookPart)}</div>
               <div class="member-roles-line"><strong>Project</strong>${escapeHtml(m.projectRole)}</div>
